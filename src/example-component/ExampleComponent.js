@@ -9,13 +9,11 @@ import CodeMirror from 'react-codemirror';
 import 'codemirror-graphql/mode';
 import gql from 'graphql-tag';
 import './example_style.css';
-import {Token, ClientID, Endpoint} from '../content/authorization';
-
+import { Token, ClientID, Endpoint } from '../content/authorization';
 
 //  ----------------------------------------------------------------------------------------
 // # Constants
 //  ----------------------------------------------------------------------------------------
-
 
 // Setup Client
 const authLink = setContext((_, { headers }) => {
@@ -50,11 +48,9 @@ let outputOptions = {
   lineWrapping: true,
 };
 
-
 //  ----------------------------------------------------------------------------------------
 // # Functions
 //  ----------------------------------------------------------------------------------------
-
 
 // replaceText(String, Boolean) ==> String
 // takes a string that is the input for an example and a boolean which is true iff the text is to be formatted
@@ -63,7 +59,7 @@ function replaceText(s, autoformat) {
   let output = '';
   while (s.length > 0) {
     if (s.substring(0, 15) === 'generateString(') {
-      s = s.replace('generateString(','');
+      s = s.replace('generateString(', '');
       let params = '';
       while (s[0] !== ')') {
         params = params + s[0];
@@ -73,7 +69,7 @@ function replaceText(s, autoformat) {
       output = output + generateString(params.split(')')[0]);
     }
     if (s.substring(0, 12) === 'generateInt(') {
-      s = s.replace('generateInt(','');
+      s = s.replace('generateInt(', '');
       let params = '';
       while (s[0] !== ')') {
         params = params + s[0];
@@ -90,9 +86,14 @@ function replaceText(s, autoformat) {
         s = s.slice(1);
       }
       s = s.slice(1);
-      output = output + generateFloat(parseInt(params[0]), parseInt(params[1]), params[2] === 'true');
-    }
-    else {
+      output =
+        output +
+        generateFloat(
+          parseInt(params[0]),
+          parseInt(params[1]),
+          params[2] === 'true',
+        );
+    } else {
       output = output + s[0];
       s = s.slice(1);
     }
@@ -108,7 +109,7 @@ function replaceText(s, autoformat) {
 // Takes a string that is the input for an example and returns a string that is the same as the given
 // string but formatted to look good in a codemirror window.
 function formatText(s) {
-  s = s.replace(/\n/g,' ').replace(/\r/g,' ');
+  s = s.replace(/\n/g, ' ').replace(/\r/g, ' ');
   let output = '';
   let indent = 0;
   while (s.length > 0) {
@@ -117,7 +118,7 @@ function formatText(s) {
       output = output + ': ';
       s = s.slice(1);
       if (s[0] === ' ') {
-        s = s.slice(1)
+        s = s.slice(1);
       }
       if (s[0] !== '{' && s[0] !== '[' && s[0] !== '\n') {
         let value;
@@ -126,10 +127,10 @@ function formatText(s) {
         } else if (s[0] === "'") {
           value = "'" + s.split("'")[1] + "'";
         } else {
-          value = s.split(' ')[0]
+          value = s.split(' ')[0];
         }
         s = s.replace(value, '');
-        if (s.replace(/ /g,'')[0] === '}' || s.replace(/ /g,'')[0] === ')') {
+        if (s.replace(/ /g, '')[0] === '}' || s.replace(/ /g, '')[0] === ')') {
           output = output + value;
         } else {
           output = output + value + '\n' + ' '.repeat(indent);
@@ -139,13 +140,20 @@ function formatText(s) {
     // break up outputs
     if (s[0] === ' ') {
       output = output + ' ';
-      let removed = s.replace(/ /g,'')
-      let removedO = output.replace(/ /,'')
-      if (removed[0] === '(' ||removed[0] === ')' || removed[0] === '{' || removed[0] === '}' ||
-        removedO === 'query' || removedO === 'mutation' || removedO === 'subscription') {
+      let removed = s.replace(/ /g, '');
+      let removedO = output.replace(/ /, '');
+      if (
+        removed[0] === '(' ||
+        removed[0] === ')' ||
+        removed[0] === '{' ||
+        removed[0] === '}' ||
+        removedO === 'query' ||
+        removedO === 'mutation' ||
+        removedO === 'subscription'
+      ) {
         s = s.slice(1);
       } else {
-        output = output + '\n' + ' '.repeat(indent)
+        output = output + '\n' + ' '.repeat(indent);
         s = s.slice(1);
       }
     }
@@ -157,7 +165,9 @@ function formatText(s) {
     }
     // break on '}'
     if (s[0] === '}') {
-      if (indent > 1) { indent = indent - 2; }
+      if (indent > 1) {
+        indent = indent - 2;
+      }
       output = output + '\n' + ' '.repeat(indent) + '}';
       if (s[1] === ',') {
         if (s[2] === ' ') {
@@ -166,49 +176,54 @@ function formatText(s) {
           output = output + ',' + '\n' + ' '.repeat(indent);
         }
         s = s.slice(1);
-      } else if (s.replace(/ /g,'')[1] !== '}') {
+      } else if (s.replace(/ /g, '')[1] !== '}') {
         output = output + '\n' + ' '.repeat(indent);
       }
       s = s.slice(1);
     }
     // custom formatting
-    if (s.substring(0,2) === '@@') {
+    if (s.substring(0, 2) === '@@') {
       output = output + '\n' + ' '.repeat(indent);
       s = s.slice(2);
     }
-    if (s.substring(0,2) === '--') {
+    if (s.substring(0, 2) === '--') {
       output = output + ' ';
       s = s.slice(2);
     }
     // remove excess spaces
     if (s.substring(0, 2) === '  ') {
       s = s.slice(1);
-    }
-    else {
+    } else {
       output = output + s[0];
       s = s.slice(1);
     }
   }
-  return output.split('\n').filter(x=> x.replace(/ /g,'') !== '').join('\n').replace('undefined','');
+  return output
+    .split('\n')
+    .filter(x => x.replace(/ /g, '') !== '')
+    .join('\n')
+    .replace('undefined', '');
 }
 
 // generateString(Int) ==> String
 // Takes an int and produces a string of random characters who's length is equal to the given int
 function generateString(length) {
   let output = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
   const min = 0;
   const max = characters.length - 1;
   let i = 0;
   while (i < length) {
-    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output =
+      output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   return '"' + output + '"';
 }
 
 // generateInt(Int, Boolean) ==> String
-// takes an int and a boolean and produces a string representing a randomly generated int. The number of didgets in 
+// takes an int and a boolean and produces a string representing a randomly generated int. The number of didgets in
 // the int is equal to the given int. If the boolean is true, the int has a 50% chance of being negative.
 function generateInt(length, canBeNegative) {
   let output = '';
@@ -220,15 +235,16 @@ function generateInt(length, canBeNegative) {
     output = output + '-';
   }
   while (i < length) {
-    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output =
+      output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   return output;
 }
 
 // generateFloat(Int, Int, Boolean) ==> String
-// takes two ints and a boolean and produces a string representing a randomly generated float. The number of 
-// digits in the float's whole part is equal to the first int, while the number of didgets in the fractional 
+// takes two ints and a boolean and produces a string representing a randomly generated float. The number of
+// digits in the float's whole part is equal to the first int, while the number of didgets in the fractional
 // part is equal to the second int. If the given boolean is true the float has a 50% chance of being negative.
 function generateFloat(wholeLength, fractionalLength, canBeNegative) {
   let output = '';
@@ -240,13 +256,15 @@ function generateFloat(wholeLength, fractionalLength, canBeNegative) {
     output = output + '-';
   }
   while (i < wholeLength) {
-    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output =
+      output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   output = output + '.';
   i = 0;
   while (i < fractionalLength) {
-    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output =
+      output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   return output;
@@ -255,7 +273,7 @@ function generateFloat(wholeLength, fractionalLength, canBeNegative) {
 // printOutput(String) ==> <CodeMirror />
 // takes a string and produces a CodeMirror component with the given string as its value
 function printOutput(str) {
-  return (<CodeMirror id='mirrorWindow' value={str} options={outputOptions} />);
+  return <CodeMirror id='mirrorWindow' value={str} options={outputOptions} />;
 }
 
 // getStartingInput(String) ==> String
@@ -263,12 +281,12 @@ function printOutput(str) {
 function getStartingInput(startingText) {
   let startingInput;
   if (inputIsOperation(startingText, 'mutation')) {
-      startingInput = startingText;
-    } else {
-      startingInput = '';
-    }
-    return startingInput;
+    startingInput = startingText;
+  } else {
+    startingInput = '';
   }
+  return startingInput;
+}
 
 // inputIsOperation(String, String) ==> Boolean
 // Takes a string that represents some input and another string that is one of: 'query' 'mutation' or 'subscription'
@@ -283,7 +301,7 @@ function inputIsOperation(input, operation) {
 }
 
 // printOutputWindow(loadding, data, error, boolean) ==> <CodeMirror /> | <p />
-// takes the loading, data, and error params that result from a Query, Mutation, or Subscription and 
+// takes the loading, data, and error params that result from a Query, Mutation, or Subscription and
 // prints the result, unless the given boolean is true in which case it will produce an empty string.
 function printOutputWindow(loading, data, error, override) {
   if (loading) {
@@ -294,7 +312,8 @@ function printOutputWindow(loading, data, error, override) {
   }
   if (data) {
     return printOutput(JSON.stringify(data, null, 2));
-  } if (override) {
+  }
+  if (override) {
     return '';
   } else {
     return printOutput('');
@@ -305,16 +324,17 @@ function printOutputWindow(loading, data, error, override) {
 // # Component
 //  ----------------------------------------------------------------------------------------
 
-
 // Component Class
 export default class ExampleComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       code: replaceText(this.props.input, this.props.autoformat),
-      inputText: getStartingInput(replaceText(this.props.input, this.props.autoformat)),
+      inputText: getStartingInput(
+        replaceText(this.props.input, this.props.autoformat),
+      ),
       hasWritten: false,
-      lastOutput: ''
+      lastOutput: '',
     };
   }
 
@@ -343,33 +363,57 @@ export default class ExampleComponent extends Component {
 
   // Builds a Mutation Component
   renderMutation() {
-    if (
-      inputIsOperation(this.state.code, 'mutation') 
-    ) {
+    if (inputIsOperation(this.state.code, 'mutation')) {
       try {
         return (
           <Mutation mutation={gql(this.state.code)}>
             {(mutate, { loading, data, error }) => (
-              <div><button
+              <div>
+                <button
                   onClick={e => {
                     e.preventDefault();
-                    this.setState({ inputText: this.state.code, hasWritten: true});
+                    this.setState({
+                      inputText: this.state.code,
+                      hasWritten: true,
+                    });
                     mutate();
-                  }}> Run </button>
-                <p>{printOutputWindow(loading, data, error, !(this.state.hasWritten))}</p>
-              </div>)} 
-          </Mutation> );
+                  }}>
+                  {' '}
+                  Run{' '}
+                </button>
+                <p>
+                  {printOutputWindow(
+                    loading,
+                    data,
+                    error,
+                    !this.state.hasWritten,
+                  )}
+                </p>
+              </div>
+            )}
+          </Mutation>
+        );
       } catch {
         return (
-          <div><button
-              onClick={e => this.setState({ inputText: this.state.code, hasWritten: true })}>
-              Run </button></div> );
+          <div>
+            <button
+              onClick={e =>
+                this.setState({ inputText: this.state.code, hasWritten: true })
+              }>
+              Run{' '}
+            </button>
+          </div>
+        );
       }
     } else {
       return (
-        <button 
-        onClick={e => this.setState({ inputText: this.state.code, hasWritten: true })}>
-          Run </button> );
+        <button
+          onClick={e =>
+            this.setState({ inputText: this.state.code, hasWritten: true })
+          }>
+          Run{' '}
+        </button>
+      );
     }
   }
 
@@ -377,13 +421,11 @@ export default class ExampleComponent extends Component {
   renderSubscription() {
     try {
       return (
-        <Subscription
-        subscription={gql(this.state.inputText)}
-      >
-        {({ loading, data, error }) => {
+        <Subscription subscription={gql(this.state.inputText)}>
+          {({ loading, data, error }) => {
             return printOutputWindow(loading, data, error);
           }}
-      </Subscription>
+        </Subscription>
       );
     } catch {
       return printOutput('');
@@ -392,25 +434,31 @@ export default class ExampleComponent extends Component {
 
   // Determines what Component to build and builds it
   renderOutput() {
-    if (inputIsOperation(this.state.inputText, 'query') &&
-    !(inputIsOperation(this.state.code, 'mutation'))) {
+    if (
+      inputIsOperation(this.state.inputText, 'query') &&
+      !inputIsOperation(this.state.code, 'mutation')
+    ) {
       return this.renderQuery();
     }
     if (
       inputIsOperation(this.state.inputText, 'mutation') &&
       inputIsOperation(this.state.code, 'mutation')
     ) {
-      return <p></p>;
+      return <p />;
     }
-    if (inputIsOperation(this.state.inputText, 'subscription') &&
-    !(inputIsOperation(this.state.code, 'mutation'))) {
+    if (
+      inputIsOperation(this.state.inputText, 'subscription') &&
+      !inputIsOperation(this.state.code, 'mutation')
+    ) {
       return this.renderSubscription();
     } else {
-      if (this.state.hasWritten && 
-      !(inputIsOperation(this.state.code, 'mutation'))) {
+      if (
+        this.state.hasWritten &&
+        !inputIsOperation(this.state.code, 'mutation')
+      ) {
         return printOutput('');
       } else {
-        return <p></p>;
+        return <p />;
       }
     }
   }

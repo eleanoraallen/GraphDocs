@@ -9,6 +9,7 @@
     "apollo-link-context": "^1.0.18",
     "apollo-link-http": "^1.5.15",
     "codemirror-graphql": "^0.8.3",
+    "core-js": "^3.2.0",
     "graphql": "^14.4.2",
     "graphql-tag": "^2.10.1",
     "react": "^16.8.6",

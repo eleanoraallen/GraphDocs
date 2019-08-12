@@ -7,4 +7,4 @@ const mainPage = 'documentation.md';
 // note: you can currently have a maximum of three other pages!
 const otherPages = ['getting-started.md'];
 
-export {mainPage, otherPages};
+export { mainPage, otherPages };
