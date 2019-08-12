@@ -1,0 +1,142 @@
+body {
+  background-color: #ffffff !important;
+  overflow: hidden !important;
+}
+
+p {
+  font: 15px/20px Roboto, sans-serif;
+  color: #637282;
+}
+
+
+/* Headers */
+h1 {
+  color: #252a32;
+  font-size: 32px;
+  line-height: 40px;
+}
+
+h2 {
+  color: #637282;
+  font-size: 32px;
+  line-height: 40px;
+}
+
+h3 {
+  color: #637282;
+  font-size: 24px;
+  line-height: 36px;
+}
+
+h4 {
+  color: #637282;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+
+/* Links */
+a {
+  color: #0095cc;
+}
+
+a:hover {
+  color: #005b7c;
+}
+
+.fill-lighten0 {
+  color: #0095cc;
+}
+
+
+/* Line */
+hr { 
+  display: block; 
+  height: 2px;
+  border: 0; 
+  border-top: 2px solid #e5e8e9;
+  margin: 1em 0; padding: 0; }
+
+
+/* Sidebar Div */
+#docSidebar {
+  padding-right: 10px;
+  padding-left: 10px;
+  border-right: solid;
+  border-width: 2px;
+  border-color: #e5e8e9;
+  height: 100%;
+}
+
+#docSidebar a {
+  color: #637282;
+  font-size: 16px !important;
+  line-height: 16px !important;
+  letter-spacing: 0.2px !important;
+  padding-bottom: 10px !important;
+  text-decoration: none !important;
+}
+
+#docSidebar a:hover {
+  color: #0095cc !important;
+}
+
+#docSidebar img {
+  padding-top: 20px;
+}
+
+
+/* Content Div */
+#docBody a {
+  text-decoration: none !important;
+}
+
+
+/* Table used to render content */
+#appTable td {
+    vertical-align: top;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+  }
+  
+#appTable {
+  width: 100%;
+  max-width: 1500px;
+  background-color: #ffffff;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  vertical-align: top; 
+}
+
+#appTable td:nth-child(1)
+{
+  background-color:#ffffff;
+}
+
+#appTable td:nth-child(2)
+{
+  background-color:#f6f8f9; 
+  width: 510px;
+}
+
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e6e6e6; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(206, 206, 206, 0.582); 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(178, 178, 180, 0.582); 
+}

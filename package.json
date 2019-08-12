@@ -1,0 +1,43 @@
+{
+  "name": "doc-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "apollo": "^2.16.3",
+    "apollo-boost": "^0.4.3",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-link-context": "^1.0.18",
+    "apollo-link-http": "^1.5.15",
+    "codemirror-graphql": "^0.8.3",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
+    "react": "^16.8.6",
+    "react-apollo": "^2.5.8",
+    "react-codemirror": "^1.0.0",
+    "react-dom": "^16.8.6",
+    "react-markdown": "^4.1.0",
+    "react-scripts": "3.0.1",
+    "react-sidebar": "^3.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

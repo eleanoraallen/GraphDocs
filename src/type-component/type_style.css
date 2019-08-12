@@ -1,0 +1,32 @@
+body,
+input,
+textarea {
+  font: 15px/20px Roboto, sans-serif;
+  color: #637282;
+}
+
+p {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.2px;
+}
+
+em {
+  font-style: normal;
+}
+
+/* Table used to render a type w/ descriptions */
+#typeTable td {
+  padding-top: 0px;
+  padding-bottom: 7px;
+  padding-left: 15px;
+  background-color: white !important;
+  font-weight: normal !important;
+  width: auto !important;
+}
+
+#typeTable {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  width: 100% !important;
+}
