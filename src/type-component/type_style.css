@@ -25,6 +25,10 @@ em {
   width: auto !important;
 }
 
+#typeTable td:nth-child(1) {
+  width: 300px !important;
+}
+
 #typeTable {
   padding-top: 0px;
   padding-bottom: 0px;

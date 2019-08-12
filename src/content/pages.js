@@ -5,6 +5,6 @@ const mainPage = 'documentation.md';
 
 // Name(s) of Markdown File(s) that will be other pages in the documentation if there are any
 // note: you can currently have a maximum of three other pages!
-const otherPages = ['getting-started.md'];
+const otherPages = ['getting-started.md', 'dev.md'];
 
 export { mainPage, otherPages };
