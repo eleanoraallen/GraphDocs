@@ -54,7 +54,7 @@ function parseBody(toParse, shouldMergeColumns) {
       <div id='docBody' className='DocSearch-content'>
         <Query query={gql(QueryString)}>
         {({ loading, data, error }) => {
-          if (loading) return <p>{`Loading...`}</p>;
+          if (loading) return <p>{`   Loading Documentation...`}</p>;
           if (error) return <p>{JSON.stringify(error)}</p>;
           if (data) {
             let output = [];

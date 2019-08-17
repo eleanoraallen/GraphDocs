@@ -242,7 +242,7 @@ export default class ExampleComponent extends Component {
         replaceText(this.props.input, this.props.autoformat),
       ),
       hasWritten: false,
-      lastOutput: '',
+      outputText: '',
     };
   }
 
@@ -260,6 +260,7 @@ export default class ExampleComponent extends Component {
       return (
         <Query query={gql(this.state.inputText)}>
           {({ loading, data, error }) => {
+            this.setOutputText(loading, data, error);
             return printOutputWindow(loading, data, error);
           }}
         </Query>
@@ -279,6 +280,7 @@ export default class ExampleComponent extends Component {
               <div>
                 <button
                   onClick={e => {
+                    this.setOutputText(loading, data, error);
                     e.preventDefault();
                     this.setState({
                       inputText: this.state.code,
@@ -331,12 +333,26 @@ export default class ExampleComponent extends Component {
       return (
         <Subscription subscription={gql(this.state.inputText)}>
           {({ loading, data, error }) => {
+            this.setOutputText(loading, data, error);
             return printOutputWindow(loading, data, error);
           }}
         </Subscription>
       );
     } catch {
       return printOutput('');
+    }
+  }
+
+  // sets the component's outputText
+  setOutputText(loading, data, error) {
+    if (loading) {
+      this.state.outputText = 'loading...';
+    }
+    if (error) {
+      this.state.outputText = JSON.stringify(error, null, 2);
+    }
+    if (data) {
+      this.state.outputText = JSON.stringify(data, null, 2);
     }
   }
 
@@ -364,7 +380,7 @@ export default class ExampleComponent extends Component {
         this.state.hasWritten &&
         !inputIsOperation(this.state.code, 'mutation')
       ) {
-        return printOutput('');
+        return printOutput(this.state.outputText);
       } else {
         return <p />;
       }
@@ -376,6 +392,7 @@ export default class ExampleComponent extends Component {
     return (
       <ApolloProvider client={client}>
         <div>
+          <p>Output Text:{this.state.outputText}</p>
           <p>
             <CodeMirror
               id='mirrorWindow'
