@@ -10,6 +10,7 @@ import 'codemirror-graphql/mode';
 import gql from 'graphql-tag';
 import './example_style.css';
 import { Token, ClientID, Endpoint } from '../../custom/authorization';
+import {js_beautify} from 'js-beautify';
 
 //  ----------------------------------------------------------------------------------------
 // # Constants
@@ -109,100 +110,7 @@ function replaceText(s, autoformat) {
 // Takes a string that is the input for an example and returns a string that is the same as the given
 // string but formatted to look good in a codemirror window.
 function formatText(s) {
-  s = s.replace(/\n/g, ' ').replace(/\r/g, ' ');
-  let output = '';
-  let indent = 0;
-  while (s.length > 0) {
-    // break up inputs
-    if (s[0] === ':') {
-      output = output + ': ';
-      s = s.slice(1);
-      if (s[0] === ' ') {
-        s = s.slice(1);
-      }
-      if (s[0] !== '{' && s[0] !== '[' && s[0] !== '\n') {
-        let value;
-        if (s[0] === '"') {
-          value = '"' + s.split('"')[1] + '"';
-        } else if (s[0] === "'") {
-          value = "'" + s.split("'")[1] + "'";
-        } else {
-          value = s.split(' ')[0];
-        }
-        s = s.replace(value, '');
-        if (s.replace(/ /g, '')[0] === '}' || s.replace(/ /g, '')[0] === ')') {
-          output = output + value;
-        } else {
-          output = output + value + '\n' + ' '.repeat(indent);
-        }
-      }
-    }
-    // break up outputs
-    if (s[0] === ' ') {
-      output = output + ' ';
-      let removed = s.replace(/ /g, '');
-      let removedO = output.replace(/ /, '');
-      if (
-        removed[0] === '(' ||
-        removed[0] === ')' ||
-        removed[0] === '{' ||
-        removed[0] === '}' ||
-        removedO === 'query' ||
-        removedO === 'mutation' ||
-        removedO === 'subscription'
-      ) {
-        s = s.slice(1);
-      } else {
-        output = output + '\n' + ' '.repeat(indent);
-        s = s.slice(1);
-      }
-    }
-    // break on '{'
-    if (s[0] === '{') {
-      indent = indent + 2;
-      output = output + '{' + '\n' + ' '.repeat(indent);
-      s = s.slice(1);
-    }
-    // break on '}'
-    if (s[0] === '}') {
-      if (indent > 1) {
-        indent = indent - 2;
-      }
-      output = output + '\n' + ' '.repeat(indent) + '}';
-      if (s[1] === ',') {
-        if (s[2] === ' ') {
-          output = output + ',' + '\n' + ' '.repeat(indent - 1);
-        } else {
-          output = output + ',' + '\n' + ' '.repeat(indent);
-        }
-        s = s.slice(1);
-      } else if (s.replace(/ /g, '')[1] !== '}') {
-        output = output + '\n' + ' '.repeat(indent);
-      }
-      s = s.slice(1);
-    }
-    // custom formatting
-    if (s.substring(0, 2) === '@@') {
-      output = output + '\n' + ' '.repeat(indent);
-      s = s.slice(2);
-    }
-    if (s.substring(0, 2) === '--') {
-      output = output + ' ';
-      s = s.slice(2);
-    }
-    // remove excess spaces
-    if (s.substring(0, 2) === '  ') {
-      s = s.slice(1);
-    } else {
-      output = output + s[0];
-      s = s.slice(1);
-    }
-  }
-  return output
-    .split('\n')
-    .filter(x => x.replace(/ /g, '') !== '')
-    .join('\n')
-    .replace('undefined', '');
+  return js_beautify(s, { indent_size: 2 });
 }
 
 // generateString(Int) ==> String

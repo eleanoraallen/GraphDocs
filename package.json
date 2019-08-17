@@ -12,6 +12,7 @@
     "core-js": "^3.2.0",
     "graphql": "^14.4.2",
     "graphql-tag": "^2.10.1",
+    "js-beautify": "^1.10.2",
     "react": "^16.8.6",
     "react-apollo": "^2.5.8",
     "react-codemirror": "^1.0.0",

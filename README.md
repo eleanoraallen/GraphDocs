@@ -73,32 +73,18 @@ are used to create windows that can be used to display code examples. These wind
 
 Example components start out with whatever text was between their tags as their content, so `<Example></Example>` creates an empty window, while `<Example>query{aQuery{result}}</Example>` creates an example window with the text:
 
-query { aQuery } { result }}
+query { 
+  aQuery 
+  { 
+  result 
+  }
+}
 
 #### Auto-formatting
 
-You may want text in one of your example windows auto-format itself. To do this, include the parameter autoformat=true in your example components start tag. For example: `<Example autoformat=true>query { aQuery } { result }}</Example>` will create an example window with a query that looks like this:
+The code in example windows will auto-format itself by default, so it should always look nice. However, you may not want code to auto-format for some reason. To do this, include the parameter autoformat=false in your example components start tag. For example: `<Example autoformat=false>query {   aQuery } { result }}</Example>` will create an example window with a query that looks like this:
 
-query {
-aQuery {
-result
-}
-}
-
-#### Adding extra spaces and line breaks
-
-You may wish to insert extra spaces or linebreaks without overridning the auto-formating entierly. To do this, simply insert `@@` for any linebreak and`--` for any space. If you're planning on inserting multiple special characters in a row, be sure to seperate them with a space! For example `<Example autoformat=true>query --{ @@aQuery {-- -- result@@ @@ @@ -- -- -- --}}</Example>` would produce an example window with the following text:
-
-query {
-  
- aQuery {
-result
-
-}
-
-}
-
-(I would judge you for doing that though)
+query {   aQuery } { result }}
 
 #### Generating Input
 
@@ -108,17 +94,17 @@ You may wish to generate randomized inputs for some of your operations. There ar
 - `generateInt(int Boolean)` produces an randomized intiger of Int didgets in length. The boolean is optional, if set to true the int has a 50% chance of being negative. (note: the arguments should be seperated only by spaces, not commas!)
 - `generateFloat(Int Int Boolean)` produces a randomized float who's whole part is equal in length to the first int, while the number of didgets in the fractional part is equal to the second in length. The boolean is optional, if set to true the float has a 50% chance of being negative. (note: the arguments should be seperated only by spaces, not commas!)
 
-You can include these functions anywhere in an example's input and they will be replaced with their outputs. For example `<Example autoformat=true>query{aQuery{generateString(3) generateInt(6 true) generateFloat(2 5 true)}{result}}</Example>` will produce an example window with a query that looks something like:
+You can include these functions anywhere in an example's input and they will be replaced with their outputs. For example `<Example autoformat=false>query{aQuery{generateString(3) generateInt(6 true) generateFloat(2 5 true)}{result}}</Example>` will produce an example window with a query that looks something like:
 
 query {
-aQuery {
-field1: "tR4"
-field2: 141918
-field3: -97.82019
-}
-{
-result
-}
+  aQuery {
+    field1: "tR4"
+    field2: 141918
+    field3: -97.82019
+  }
+  {
+  result
+  }
 }
 
 ---

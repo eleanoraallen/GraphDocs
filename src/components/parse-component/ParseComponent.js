@@ -267,7 +267,7 @@ function parseExample(toParse) {
     toParse = toParse.slice(1);
   }
   toParse = toParse.replace('>', '');
-  const autoformat = props.includes('autoformat=true');
+  const autoformat = !props.includes('autoformat=false');
   let input = '';
   while (toParse.substring(0, 10) !== '</Example>') {
     input = input + toParse[0];
