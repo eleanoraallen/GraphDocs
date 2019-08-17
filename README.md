@@ -10,9 +10,9 @@ The Documentation is now live!: http://chargetrip-api-documentation.s3-website.e
 
 To Make or Edit Documentation:
 
-- set endpoint and authorization headers in /src/content/authorization.js
-- write up to four .md files in /public (one main + 3 others)
-- set mainPage and otherPages in /src/content/pages.js
+- set endpoint and authorization headers in /src/custom/authorization.js
+- write up to four .md files in /public/content (one main + 3 others) that will be used to your documentation
+- set mainPage and otherPages in /src/custom/pages.js
 
 To Test:
 
@@ -37,7 +37,7 @@ These tags can be used only to create/within the a sidebar
 - `<Sidebar></Sidebar>` : specifies that the stuff between these tags should be used to render the sidebar.
 - `<Header></Header>` : specifies that the stuff between these tags should be used as a header in the sidebar.
 - `<Subheader></Subheader>` : specifies that the stuff between these tags should be used as a subheader in the sidebar.
-- `<Logo></Logo>` : renders a logo with a link pointing to whatever url is given between the tags.
+- `<Logo></Logo>` : renders an instance of your logo with a link pointing to whatever url is given between the tags.
 
 note: most of the time, headers and subheaders will contain links (eg. [something](#heading-name) ), that will point to the id a heading (given by `##` or `<h1>` etc.) in the rest of the documentation. All headers are automaticaly asigned ids that are the same as their names but with all lower case letters and special characters (space,!,. etc.) replaced with -. (Eg '##My Introduction' would have an id 'my-introduction' and could be linked to with a header `<Header>`[Intro](#my-introduction).)
 
@@ -55,7 +55,7 @@ These tags can be used only to create/within the body of the documentation
 
 ### Misc Tags
 
-- `<Line>` : makes a horizontal line separating two parts of the documentation body or the sidebar (note: only works outside of other body tags)
+- `<Line>` : makes a horizontal line separating two parts of the documentation body or the sidebar (note: only works outside of other body tags if you want to add a line within a body tag, just use the markdown ---)
 
 ---
 
@@ -270,9 +270,7 @@ by appending "/?page=_stuff here_" you can get it to display other pages in the 
 
 To change the style of the main page edit /src/app_style.css
 
-To change the style of examples edit /src/example-component/example_style.css
-
-To change the style of references edit /src/reference-component/reference_style.css
+To change the style of dynamic examples edit /src/components/example-component/example_style.css
 
 ---
 
@@ -280,7 +278,7 @@ To change the style of references edit /src/reference-component/reference_style.
 
 ---
 
-To change logo: replace replace /src/content/logo.png
+To change logo: replace replace /public/logo.png
 
 To change favicon: replace /public/favicon.png
 

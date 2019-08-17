@@ -1,11 +1,4 @@
 import React, { Component } from 'react';
-import { ApolloClient } from 'apollo-boost';
-import { HttpLink } from 'apollo-link-http';
-import { ApolloProvider, Query } from 'react-apollo';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { setContext } from 'apollo-link-context';
-import gql from 'graphql-tag';
-import { Token, ClientID, Endpoint } from '../content/authorization';
 import ReactMarkdown from 'react-markdown';
 import './type_style.css';
 
@@ -13,58 +6,15 @@ import './type_style.css';
 // # Constants
 //  ----------------------------------------------------------------------------------------
 
-// Setup Client
-const authLink = setContext((_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-      authorization: Token ? `Bearer ${Token}` : '',
-      'x-client-id': ClientID,
-    },
-  };
-});
-const clientCache = new InMemoryCache();
-const clientLink = new HttpLink({ uri: Endpoint });
-const client = new ApolloClient({
-  cache: clientCache,
-  link: authLink.concat(clientLink),
-});
-
 // String used to construct links to the reference
 const ReferenceLink = (
   window.location.href.split('/?page=')[0].replace('http://', '') +
   '/?page=printType:NAME'
 ).replace('//?page', '/?page');
 
-// String used to construct query
-const schemaQuery =
-  'query{__schema{types{kind name possibleTypes{name}inputFields{name description type{name ofType{' +
-  'name}}} description enumValues{name description} fields{name description type{name ofType{name}}}}}}';
-
 //  ----------------------------------------------------------------------------------------
 // # Functions
 //  ----------------------------------------------------------------------------------------
-
-// printType(String) ==> Query
-// takes the name of a type (0bject, Input-Object or Enum) and creates a Query that prints that type
-function printType(typeName, printHeader, printDiscriptions) {
-  return (
-    <Query query={gql(schemaQuery)}>
-      {({ loading, data, error }) => {
-        if (loading) return <p>{`Loading  ${typeName}...`}</p>;
-        if (error) return <p>{JSON.stringify(error)}</p>;
-        if (data) {
-          return makeType(
-            typeName,
-            printHeader,
-            printDiscriptions,
-            data.__schema.types,
-          );
-        }
-      }}
-    </Query>
-  );
-}
 
 // makeType(String, [type]) ==> <ReactMarkdown />
 // takes the name of a type (Scalar, 0bject, Input-Object, Interface, Union or Enum) and an array of types
@@ -256,14 +206,11 @@ export default class TypeComponent extends Component {
 
   // Render
   render() {
-    return (
-      <ApolloProvider client={client}>
-        {printType(
-          this.props.typeName,
-          this.props.printHeader,
-          this.props.printDiscriptions,
-        )}
-      </ApolloProvider>
+    return makeType(
+      this.props.typeName,
+      this.props.printHeader,
+      this.props.printDiscriptions,
+      this.props.types
     );
   }
 }

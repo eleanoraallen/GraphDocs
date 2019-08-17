@@ -13,30 +13,18 @@
 
 ### Objects
 
-<TypeList>Object</TypeList>
-
-</Full>
+<OperationTable exclude=[amenity]>query</OperationTable>
 
 <Line>
 
-<Full>
+<Type>Route</Type>
 
-### Input Objects
-
-<TypeList>Input_Object</TypeList>
-
-</Full>
+-----
 
 <Line>
 
-<Full>
-
-### Enumerators
-
-<TypeList>Enum</TypeList>
+<TypeList exclude=[address]>Object</TypeList>
 
 </Full>
-
-<Line>
 
 </Body>

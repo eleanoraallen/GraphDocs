@@ -9,7 +9,7 @@ import CodeMirror from 'react-codemirror';
 import 'codemirror-graphql/mode';
 import gql from 'graphql-tag';
 import './example_style.css';
-import { Token, ClientID, Endpoint } from '../content/authorization';
+import { Token, ClientID, Endpoint } from '../../custom/authorization';
 
 //  ----------------------------------------------------------------------------------------
 // # Constants

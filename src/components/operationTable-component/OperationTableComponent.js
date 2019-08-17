@@ -1,40 +1,10 @@
 import React, { Component } from 'react';
-import { ApolloClient } from 'apollo-boost';
-import { HttpLink } from 'apollo-link-http';
-import { ApolloProvider, Query } from 'react-apollo';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { setContext } from 'apollo-link-context';
-import gql from 'graphql-tag';
-import { Token, ClientID, Endpoint } from '../content/authorization';
-import {
-  QueryString,
-  MutationString,
-  SubscriptionString,
-  OperationString,
-} from './query_strings';
 import ReactMarkdown from 'react-markdown';
 import './operationTable_style.css';
 
 //  ----------------------------------------------------------------------------------------
 // # Constants
 //  ----------------------------------------------------------------------------------------
-
-// Setup Client
-const authLink = setContext((_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-      authorization: Token ? `Bearer ${Token}` : '',
-      'x-client-id': ClientID,
-    },
-  };
-});
-const clientCache = new InMemoryCache();
-const clientLink = new HttpLink({ uri: Endpoint });
-const client = new ApolloClient({
-  cache: clientCache,
-  link: authLink.concat(clientLink),
-});
 
 // String used to construct links to the reference
 const ReferenceLink = (
@@ -52,89 +22,59 @@ const ReferenceLink = (
 // include at least one instance of at least one string from the first array in their name, arguments, or output,
 // and do not include any instances of any of the strings in the second array in its name, arguments, or output.
 // If both arrays are empty, produces a table of all operations of the specified type.
-function printFilteredOperations(operationType, include, exclude) {
+function printFilteredOperations(operationType, include, exclude, data) {
   if (operationType === 'query') {
-    return (
-      <Query query={gql(QueryString)}>
-        {({ loading, data, error }) => {
-          if (loading) return <p>Loading Queries...</p>;
-          if (error) return <p>Error Loading Queries!</p>;
-          if (data)
-            return printTable(
-              filterOperations(
-                data.__schema.queryType.fields,
-                include,
-                exclude,
-              ),
-              data.__schema.types,
-              'Query',
-            );
-        }}
-      </Query>
-    );
+    return(
+      printTable(
+        filterOperations(
+          data.__schema.queryType.fields,
+          include,
+          exclude,
+          ),
+          data.__schema.types,
+          'Query',
+      ));
   }
   if (operationType === 'mutation') {
-    return (
-      <Query query={gql(MutationString)}>
-        {({ loading, data, error }) => {
-          if (loading) return <p>Loading Mutations...</p>;
-          if (error) return <p>Error Loading Mutations!</p>;
-          if (data)
-            return printTable(
-              filterOperations(
-                data.__schema.mutationType.fields,
-                include,
-                exclude,
-              ),
-              data.__schema.types,
-              'Mutation',
-            );
-        }}
-      </Query>
-    );
+    return(
+      printTable(
+        filterOperations(
+          data.__schema.mutationType.fields,
+          include,
+          exclude,
+          ),
+          data.__schema.types,
+          'Mutation',
+      ));
   }
   if (operationType === 'subscription') {
-    return (
-      <Query query={gql(SubscriptionString)}>
-        {({ loading, data, error }) => {
-          if (loading) return <p>Loading Subscriptions...</p>;
-          if (error) return <p>Error Loading Subscriptions!</p>;
-          if (data)
-            return printTable(
-              filterOperations(
-                data.__schema.subscriptionType.fields,
-                include,
-                exclude,
-              ),
-              data.__schema.types,
-              'Subscription',
-            );
-        }}
-      </Query>
-    );
-  } else {
-    return (
-      <Query query={gql(OperationString)}>
-        {({ loading, data, error }) => {
-          if (loading) return <p>Loading Operations...</p>;
-          if (error) return <p>Error Loading Operations!</p>;
-          if (data)
-            return printTable(
-              filterOperations(
-                data.__schema.queryType.fields
-                  .concat(data.__schema.mutationType.fields)
-                  .concat(data.__schema.subscriptionType.fields),
-                include,
-                exclude,
-              ),
-              data.__schema.types,
-              'Operation',
-            );
-        }}
-      </Query>
-    );
+    return(
+      printTable(
+        filterOperations(
+          data.__schema.subscriptionType.fields,
+          include,
+          exclude,
+          ),
+          data.__schema.types,
+          'Subscription',
+      ));
+  }
+  else {
+    return(
+      printTable(
+        filterOperations(
+          data.__schema.queryType.fields.concat(
+            data.__schema.mutationType.fields).concat(
+              data.__schema.subscriptionType.fields),
+          include,
+          exclude,
+          ),
+          data.__schema.types,
+          'Operation'
+      ));
   }
 }
+        
 
 // filterOperations([operation], [String], [String]) ==> [operation]
 // Takes an array of the operation type (eg. queryType) and two arrays of strings and filters the array of operations s.t
@@ -151,6 +91,9 @@ function filterOperations(operations, include, exclude) {
   let excludeString = excludeList.join('');
   return operations.filter(operation => {
     let checkedInclude = false;
+    if (includeList.length === 0)  {
+      checkedInclude = true;
+    }
     let checkedExclude = false;
     // Check Operation Name
     checkedInclude =
@@ -347,14 +290,11 @@ export default class OperationTableComponent extends Component {
 
   // Render
   render() {
-    return (
-      <ApolloProvider client={client}>
-        {printFilteredOperations(
-          this.props.operationType.toLowerCase(),
-          this.props.include,
-          this.props.exclude,
-        )}
-      </ApolloProvider>
-    );
+    return(
+      printFilteredOperations(
+        this.props.operationType.toLowerCase(),
+        this.props.include,
+        this.props.exclude,
+        this.props.data));
   }
 }

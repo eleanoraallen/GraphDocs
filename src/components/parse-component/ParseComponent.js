@@ -1,13 +1,45 @@
-import React, { Component, useMemo } from 'react';
-import { render } from 'react-dom';
+import React, { useMemo } from 'react';
+import { ApolloClient } from 'apollo-boost';
+import { HttpLink } from 'apollo-link-http';
+import { ApolloProvider, Query } from 'react-apollo';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { setContext } from 'apollo-link-context';
+import gql from 'graphql-tag';
+import { Token, ClientID, Endpoint } from '../../custom/authorization';
 import ReactMarkdown from 'react-markdown';
 import Sidebar from 'react-sidebar';
-import '../app_style.css';
 import ExampleComponent from '../example-component/ExampleComponent';
 import TypeComponent from '../type-component/TypeComponent';
 import OperationTableComponent from '../operationTable-component/OperationTableComponent';
 import TypeListComponent from '../typeList-component/TypeListComponent';
-import logo from '../content/logo.png';
+
+//  ----------------------------------------------------------------------------------------
+// # Constants
+//  ----------------------------------------------------------------------------------------
+
+// Setup Client
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: Token ? `Bearer ${Token}` : '',
+      'x-client-id': ClientID,
+    },
+  };
+});
+const clientCache = new InMemoryCache();
+const clientLink = new HttpLink({ uri: Endpoint });
+const client = new ApolloClient({
+  cache: clientCache,
+  link: authLink.concat(clientLink),
+});
+
+// String used to build introspection query
+const QueryString = 'query{__schema{ ' +
+  'types{kind name possibleTypes{name}inputFields{name description type{name ofType{name}}}description enumValues{name}fields{name description type{name ofType{name}}}} ' + 
+  'queryType{fields{name description type {name ofType{name ofType{name}}}args{name description type {name ofType {name}}}}} ' + 
+  'subscriptionType{fields{name description type {name ofType{name ofType{name}}}args{name description type {name ofType {name}}}}} ' +
+  'mutationType{fields{name description type{name ofType{name ofType{name}}}args{name description type {name ofType {name}}}}}}}';
 
 //  ----------------------------------------------------------------------------------------
 // # Functions
@@ -18,44 +50,46 @@ import logo from '../content/logo.png';
 // rendered all in one column and parses the string, producing a div which contains the contents of the .md file's body.
 function parseBody(toParse, shouldMergeColumns) {
   toParse = removeComments(toParse);
-  let output = [];
-  while (toParse.length > 0) {
-    if (toParse.substring(0, 6) === '<Body>') {
-      let inside = '';
-      while (toParse.substring(0, 7) !== '</Body>') {
-        inside = inside + toParse[0];
-        toParse = toParse.slice(1);
-      }
-      output.push(
-        parseBodyInside(inside.replace('<Body>', ''), shouldMergeColumns),
-      );
-    } else {
-      toParse = toParse.slice(1);
-    }
-  }
-  return (
-    <div id='docBody' className='DocSearch-content'>
-      {output}
-    </div>
-  );
+  return(
+      <div id='docBody' className='DocSearch-content'>
+        <Query query={gql(QueryString)}>
+        {({ loading, data, error }) => {
+          if (loading) return <p>{`Loading...`}</p>;
+          if (error) return <p>{JSON.stringify(error)}</p>;
+          if (data) {
+            let output = [];
+            while (toParse.length > 0) {
+              if (toParse.substring(0, 6) === '<Body>') {
+                let inside = '';
+                while (toParse.substring(0, 7) !== '</Body>') {
+                  inside = inside + toParse[0];
+                  toParse = toParse.slice(1);
+                }
+                output.push(parseBodyInside(inside.replace('<Body>', ''), shouldMergeColumns, data));
+              } else {
+                toParse = toParse.slice(1);
+              }
+            }
+            return output;
+          }}}
+        </Query>
+      </div>);
 }
 
-// parseBodyInside(String, Boolean) ==> <div>{[ReactComponent]}</div>
-// Takes a string that is the contents of some .md file up to an instance of <Body> exclusive and a boolean which is true iff the
-// content should be rendered all in one column and parses the string to the first instance of </Body> inclusicve, returning the result.
-function parseBodyInside(toParse, shouldMergeColumns) {
+// parseBodyInside(String, Boolean, data) ==> <div>{[ReactComponent]}</div>
+// Takes a string that is the contents of some .md file up to an instance of <Body> exclusive, a boolean which is true iff the
+// content should be rendered all in one column, and a the data resulting from an introspection query and parses the string to 
+// the first instance of </Body> inclusicve, returning the result.
+function parseBodyInside(toParse, shouldMergeColumns, data) {
   let output = [];
   while (toParse.length > 0) {
     if (toParse.substring(0, 6) === '<Left>') {
-      const parsed = parseLeft(
-        toParse.replace('<Left>', ''),
-        shouldMergeColumns,
-      );
+      const parsed = parseLeft(toParse.replace('<Left>', ''), shouldMergeColumns, data);
       output.push(parsed[1]);
       toParse = parsed[0];
     }
     if (toParse.substring(0, 6) === '<Full>') {
-      const parsed = parseFull(toParse.replace('<Full>', ''));
+      const parsed = parseFull(toParse.replace('<Full>', ''), data);
       output.push(parsed[1]);
       toParse = parsed[0];
     }
@@ -69,12 +103,12 @@ function parseBodyInside(toParse, shouldMergeColumns) {
   return <div>{output}</div>;
 }
 
-// parseBodyInside(String, Boolean) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file up to an instance of <Left> exclusive and a boolean which is true iff the
-// content should be rendered all in one column and parses the string to the first instance of </Right> inclusive, returning an array
-// where the first element is the rest of the string after </Right> and the second element the an array of react components that is the
-// result of the parse.
-function parseLeft(toParse, shouldMergeColumns) {
+// parseBodyInside(String, Boolean, data) ==> [String, <div>{[ReactComponent]}</div>]
+// Takes a string that is the contents of some .md file up to an instance of <Left> exclusive, a boolean which is true iff the 
+// result should be rendered as one column, and the data resulting from an introspection query and parses the string to the 
+// first instance of </Right> inclusive, returning an array where the first element is the rest of the string after </Right> 
+// and the second element the an array of react components that is the result of the parse.
+function parseLeft(toParse, shouldMergeColumns, data) {
   let inside = '';
   while (toParse.substring(0, 8) !== '</Right>') {
     inside = inside + toParse[0];
@@ -96,14 +130,14 @@ function parseLeft(toParse, shouldMergeColumns) {
     const leftTable = (
       <table id='appTable'>
         <tr>
-          <td>{parseInside(leftCol)}</td>
+          <td>{parseInside(leftCol, data)}</td>
         </tr>
       </table>
     );
     const rightTable = (
       <table id='appTable'>
         <tr>
-          <td>{parseInside(rightCol)}</td>
+          <td>{parseInside(rightCol, data)}</td>
         </tr>
       </table>
     );
@@ -112,8 +146,8 @@ function parseLeft(toParse, shouldMergeColumns) {
     const outputTable = (
       <table id='appTable'>
         <tr>
-          <td>{parseInside(leftCol)}</td>
-          <td>{parseInside(rightCol)}</td>
+          <td>{parseInside(leftCol, data)}</td>
+          <td>{parseInside(rightCol, data)}</td>
         </tr>
       </table>
     );
@@ -121,11 +155,12 @@ function parseLeft(toParse, shouldMergeColumns) {
   }
 }
 
-// parseFull(String) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file up to an instance of <Full> exclusive and parses the string
-// up to the first instance of </Full> inclusive, returning an array where the first element is the rest of the string
-// after </Full> and the second element is the array of react components that is the result of the parse.
-function parseFull(toParse) {
+// parseFull(String, data) ==> [String, <div>{[ReactComponent]}</div>]
+// Takes a string that is the contents of some .md file up to an instance of <Full> exclusive, the data resulting from
+// an introspection query, and the array of types and parses the string up to the first instance of </Full> inclusive, 
+// returning an array where the first element is the rest of the string after </Full> and the second element is the array
+// of react components that is the result of the parse.
+function parseFull(toParse, data) {
   let inside = '';
   while (toParse.substring(0, 7) !== '</Full>') {
     inside = inside + toParse[0];
@@ -135,17 +170,18 @@ function parseFull(toParse) {
   const outputTable = (
     <table id='appTable'>
       <tr>
-        <td>{parseInside(inside)}</td>
+        <td>{parseInside(inside, data)}</td>
       </tr>
     </table>
   );
   return [toParse, outputTable];
 }
 
-// parseFull(String) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file between instances of <Left></Left>, <Right></Right> or
-// <Full></Full> tags and parses it, returning the array of react components that is the result of the parse.
-function parseInside(s) {
+// parseInside(String, data) ==> [String, <div>{[ReactComponent]}</div>]
+// Takes a string that is the contents of some .md file between instances of <Left></Left>, <Right></Right> or <Full></Full> 
+// tags, and the data resulting from an introspection query and parses the string, returning the array of react components 
+// that is the result of the parse.
+function parseInside(s, data) {
   let output = [];
   let section = '';
   while (s.length > 0) {
@@ -168,8 +204,8 @@ function parseInside(s) {
           renderers={{ heading: props => headingRenderer(props) }}
         />,
       );
-      section = '';
-      const parsed = parseTypeList(s.replace('<TypeList', ''));
+      section = ''
+      const parsed = parseTypeList(s.replace('<TypeList', ''), data.__schema.types);
       output.push(parsed[1]);
       s = parsed[0];
     } else if (s.substring(0, 5) === '<Type') {
@@ -179,8 +215,8 @@ function parseInside(s) {
           renderers={{ heading: props => headingRenderer(props) }}
         />,
       );
-      section = '';
-      const parsed = parseType(s.replace('<Type', ''));
+      section = ''
+      const parsed = parseType(s.replace('<Type', ''), data.__schema.types);
       output.push(parsed[1]);
       s = parsed[0];
     }
@@ -191,8 +227,8 @@ function parseInside(s) {
           renderers={{ heading: props => headingRenderer(props) }}
         />,
       );
-      section = '';
-      const parsed = parseOperationTable(s.replace('<OperationTable', ''));
+      section = ''
+      const parsed = parseOperationTable(s.replace('<OperationTable', ''), data);
       output.push(parsed[1]);
       s = parsed[0];
     }
@@ -241,11 +277,11 @@ function parseExample(toParse) {
   return [toParse, <ExampleComponent input={input} autoformat={autoformat} />];
 }
 
-// parseType(String) ==> <TypeComponent />
-// Takes a string that is the contents of some .md file up to an instance of <Type exclusive and parses the string
-// up to the first instance of </Type> inclusive, returning an array where the first element is the rest of the string
-// after </Type> and the second element is the TypeComponent that is the result of the parse.
-function parseType(toParse) {
+// parseType(String, data) ==> <TypeComponent />
+// Takes a string that is the contents of some .md file up to an instance of <Type exclusive and the array of types and
+// parses the string up to the first instance of </Type> inclusive, returning an array where the first element is the 
+// rest of the string after </Type> and the second element is the TypeComponent that is the result of the parse.
+function parseType(toParse, types) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
     props = props + toParse[0];
@@ -263,6 +299,7 @@ function parseType(toParse) {
   return [
     toParse,
     <TypeComponent
+      types={types}
       typeName={typeName}
       printHeader={printHeader}
       printDiscriptions={printDescriptions}
@@ -271,10 +308,10 @@ function parseType(toParse) {
 }
 
 // parseTypeList(String) ==> <TypeListComponent />
-// Takes a string that is the contents of some .md file up to an instance of <TypeList exclusive and parses the string
-// up to the first instance of </TypeList> inclusive, returning an array where the first element is the rest of the string
-// after </TypeList> and the second element is the TypeListComponent that is the result of the parse.
-function parseTypeList(toParse) {
+// Takes a string that is the contents of some .md file up to an instance of <TypeList exclusive and the array of types and
+// parses the string up to the first instance of </TypeList> inclusive, returning an array where the first element is the rest 
+// of the string after </TypeList> and the second element is the TypeListComponent that is the result of the parse.
+function parseTypeList(toParse, types) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
     props = props + toParse[0];
@@ -306,6 +343,7 @@ function parseTypeList(toParse) {
   return [
     toParse,
     <TypeListComponent
+      types={types}
       typeKind={typeKind}
       include={include}
       exclude={exclude}
@@ -316,16 +354,17 @@ function parseTypeList(toParse) {
 }
 
 // parseOperationTable(String) ==> <OperationTableComponent />
-// Takes a string that is the contents of some .md file up to an instance of <OperationTable exclusive and parses the string
-// up to the first instance of </OperationTable> inclusive, returning an array where the first element is the rest of the string
-// after </OperationTable> and the second element is the OperationTableComponent that is the result of the parse.
-function parseOperationTable(s) {
+// Takes a string that is the contents of some .md file up to an instance of <OperationTable exclusive and the data resulting from
+// an introspection query and parses the string up to the first instance of </OperationTable> inclusive, returning an array where 
+// the first element is the rest of the string after </OperationTable> and the second element is the OperationTableComponent that
+//  is the result of the parse.
+function parseOperationTable(toParse, data) {
   let props = '';
-  while (s.substring(0, 1) !== '>') {
-    props = props + s[0];
-    s = s.slice(1);
+  while (toParse.substring(0, 1) !== '>') {
+    props = props + toParse[0];
+    toParse = toParse.slice(1);
   }
-  s = s.replace('>', '');
+  toParse = toParse.replace('>', '');
   let include = [];
   if (props.includes('include=[')) {
     include = props
@@ -341,15 +380,16 @@ function parseOperationTable(s) {
       .split(' ');
   }
   let operationType = '';
-  while (s.substring(0, 17) !== '</OperationTable>') {
-    operationType = operationType + s[0];
-    s = s.slice(1);
+  while (toParse.substring(0, 17) !== '</OperationTable>') {
+    operationType = operationType + toParse[0];
+    toParse = toParse.slice(1);
   }
-  s = s.replace('</OperationTable>', '');
+  toParse = toParse.replace('</OperationTable>', '');
 
   return [
-    s,
+    toParse,
     <OperationTableComponent
+      data={data}
       operationType={operationType}
       include={include}
       exclude={exclude}
@@ -424,7 +464,7 @@ function parseLogo(toParse) {
     toParse,
     <a href={link} target='_blank'>
       {' '}
-      <img src={logo} width='172' />{' '}
+      <img src={process.env.PUBLIC_URL + '/logo.png'} width='172' />{' '}
     </a>,
   ];
 }
@@ -501,10 +541,9 @@ function flatten(text, child) {
 // Component Class
 export default function ParseComponent({ showSidebar, mergeColumns, input }) {
   const memoizedSidebar = useMemo(() => parseSidebar(input), [input]);
-  const memoizedBody = useMemo(() => parseBody(input, mergeColumns), [
-    mergeColumns,
-  ]);
+  const memoizedBody = useMemo(() => parseBody(input, mergeColumns), [mergeColumns]);
   return (
+    <ApolloProvider client={client}>
     <Sidebar
       sidebar={memoizedSidebar}
       open={showSidebar}
@@ -515,5 +554,6 @@ export default function ParseComponent({ showSidebar, mergeColumns, input }) {
       styles={{ sidebar: { width: '200px' } }}>
       <b>{memoizedBody}</b>
     </Sidebar>
+    </ApolloProvider>
   );
 }

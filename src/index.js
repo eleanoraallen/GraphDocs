@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import './app_style.css';
-import ParseComponent from './parse-component/ParseComponent';
+import ParseComponent from './components/parse-component/ParseComponent';
 import { mainPage, otherPages } from './content/pages';
-import { createSecureContext } from 'tls';
 
 //  ----------------------------------------------------------------------------------------
 // # Functions
@@ -13,7 +12,7 @@ import { createSecureContext } from 'tls';
 // asyncronous function that gets the content for the main page from the mainPage markdown file
 async function getMainMd() {
   try {
-    const res = await fetch(mainPage);
+    const res = await fetch('content/' + mainPage);
     const md = await res.text();
     return md;
   } catch (e) {}
@@ -24,7 +23,7 @@ getMainMd();
 // asyncronous function that gets the content for the main page from the otherPages[0] markdown file
 async function getOneMd() {
   try {
-    const res = await fetch(otherPages[0]);
+    const res = await fetch('content/' + otherPages[0]);
     const md = await res.text();
     return md;
   } catch (e) {}
@@ -35,7 +34,7 @@ getOneMd();
 // asyncronous function that gets the content for the main page from the otherPages[1] markdown file
 async function getTwoMd() {
   try {
-    const res = await fetch(otherPages[1]);
+    const res = await fetch('content/' + otherPages[1]);
     const md = await res.text();
     return md;
   } catch (e) {}
@@ -46,7 +45,7 @@ getTwoMd();
 // asyncronous function that gets the content for the main page from the otherPages[2] markdown file
 async function getThreeMd() {
   try {
-    const res = await fetch(otherPages[2]);
+    const res = await fetch('content/' + otherPages[2]);
     const md = await res.text();
     return md;
   } catch (e) {}
