@@ -73,7 +73,8 @@ function parseBody(toParse, shouldMergeColumns) {
             return output;
           }}}
         </Query>
-      </div>);
+      </div>
+      );
 }
 
 // parseBodyInside(String, Boolean, data) ==> <div>{[ReactComponent]}</div>
@@ -540,20 +541,20 @@ function flatten(text, child) {
 
 // Component Class
 export default function ParseComponent({ showSidebar, mergeColumns, input }) {
-  const memoizedSidebar = useMemo(() => parseSidebar(input), [input]);
-  const memoizedBody = useMemo(() => parseBody(input, mergeColumns), [mergeColumns]);
-  return (
-    <ApolloProvider client={client}>
+  const memoizedOutput = useMemo(() =>
+  <ApolloProvider client={client}>
     <Sidebar
-      sidebar={memoizedSidebar}
+      sidebar={parseSidebar(input)}
       open={showSidebar}
       docked={showSidebar}
       transitions={false}
       shadow={false}
       touch={false}
       styles={{ sidebar: { width: '200px' } }}>
-      <b>{memoizedBody}</b>
+      <b>{parseBody(input, mergeColumns)}</b>
     </Sidebar>
-    </ApolloProvider>
+    </ApolloProvider>,
+    [mergeColumns, showSidebar]
   );
+  return(memoizedOutput);
 }

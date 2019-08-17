@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import './app_style.css';
 import ParseComponent from './components/parse-component/ParseComponent';
-import { mainPage, otherPages } from './content/pages';
+import { mainPage, otherPages } from './custom/pages';
 
 //  ----------------------------------------------------------------------------------------
 // # Functions

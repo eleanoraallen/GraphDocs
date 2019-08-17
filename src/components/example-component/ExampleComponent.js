@@ -392,7 +392,6 @@ export default class ExampleComponent extends Component {
     return (
       <ApolloProvider client={client}>
         <div>
-          <p>Output Text:{this.state.outputText}</p>
           <p>
             <CodeMirror
               id='mirrorWindow'
