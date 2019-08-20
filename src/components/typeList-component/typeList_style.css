@@ -11,6 +11,14 @@ p {
   letter-spacing: 0.2px;
 }
 
+#typeTable td:nth-child(1) {
+  width: 400px;
+}
+
+#typeTable td:nth-child(2) {
+  padding-left: 0px !important;
+}
+
 em {
   font-style: normal;
 }

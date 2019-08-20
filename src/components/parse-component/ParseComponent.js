@@ -74,7 +74,7 @@ function parseBody(toParse, shouldMergeColumns) {
           }}}
         </Query>
       </div>
-      );
+  );
 }
 
 // parseBodyInside(String, Boolean, data) ==> <div>{[ReactComponent]}</div>

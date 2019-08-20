@@ -38,7 +38,12 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
           `  \n  **${type.name}**: *${
             type.description
           }*  \n  \`\`  \n  `.replace(': *null*', '') +
-          stringifyFields(type.fields, types, type.name, printDiscriptions);
+          stringifyFields(
+            type.fields, 
+            types, 
+            type.name,
+            'type',
+            printDiscriptions);
       }
       if (type.kind === 'INPUT_OBJECT' && type.name === typeName) {
         printedType =
@@ -49,6 +54,7 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
             type.inputFields,
             types,
             type.name,
+            'type',
             printDiscriptions,
           );
       }
@@ -57,7 +63,12 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
           `  \n  **${type.name}**: *${
             type.description
           }*  \n  \`\`  \n  `.replace(': *null*', '') +
-          stringifyFields(type.fields, types, type.name, printDiscriptions);
+          stringifyFields(
+            type.fields, 
+            types, 
+            type.name,
+            'interface', 
+            printDiscriptions);
       }
       if (type.kind === 'UNION' && type.name === typeName) {
         printedType =
@@ -112,44 +123,34 @@ function stringifyValues(enumValues) {
     .join('');
 }
 
-// stringifyFields([field], [type], String, Boolean) ==> String
+// stringifyFields([field], [type], String, String Boolean) ==> String
 // takes an array of Fields or inputFields, an array of types represenging all types in the schema (to be used to
-// make links), the name of the Object/Input-Object to which the Fields belong, and a boolean which is true iff
+// make links), the name of the type to which the Fields belong, the type of that type, and a boolean which is true iff
 // the field descriptions are to be printed, and returns the fields as a string to be rendered in markdown.
-function stringifyFields(fields, types, parentName, printDiscriptions) {
-  if (!printDiscriptions) {
+function stringifyFields(fields, types, parentName, parentOfType, printDiscriptions) {
+  if (printDiscriptions) {
     return (
-      `  **\`type\`** ${stringifyType(parentName, types)} \`{\`   \n` +
-      fields
-        .map(type => {
-          return `  &nbsp; &nbsp; &nbsp;  **\`${type.name}:\`** ${stringifyType(
-            getType(type),
-            types,
-          )}  \n`;
+      `  \n  | **\`${parentOfType}\`** ${stringifyType(parentName, types,)} \`{\` | |  \n  |-|-|  \n  ` +
+      fields.map(type => {
+          return (
+            `  | &nbsp; &nbsp; \`${type.name}:\` ${stringifyType(getType(type), types)} | ` + 
+            `${String(type.description).replace('null', '')} |  \n`
+            );
         })
         .sort()
         .join('') +
-      '   ```}```  \n  '
-    );
+      ' | ```}``` | |  \n  ');
   } else {
     return (
-      `  \n  **\`type\`** ${stringifyType(
-        parentName,
-        types,
-      )} \`{\`  \n  \n  | | |  \n  | - | - |  \n` +
-      fields
-        .map(type => {
+      `  \n  | **\`${parentOfType}\`** ${stringifyType(parentName, types,)} \`{\` |  \n  |-|  \n  ` +
+      fields.map(type => {
           return (
-            `  | **\`${type.name}:\`** ${stringifyType(
-              getType(type),
-              types,
-            )} | ` + `${String(type.description).replace('null', '')} |  \n`
-          );
+            `  | &nbsp; &nbsp; \`${type.name}:\` ${stringifyType(getType(type), types)} |  \n`
+            );
         })
         .sort()
         .join('') +
-      ' ```}```  \n  '
-    );
+      ' | ```}``` |  \n  ');
   }
 }
 

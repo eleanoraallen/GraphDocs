@@ -160,10 +160,10 @@ function printTable(operations, types, tableName) {
       .map(operation => {
         try {
           return (
-            `| **\`${operation.name}\`** ${stringifyArgs(
+            `| **\`${operation.name}\`**${stringifyArgs(
               operation.args,
               types,
-            )}\`:\`&nbsp; ` +
+            )}\`:\` ` +
             `${stringifyOutput(operation.type, types)} &nbsp;  | *${
               operation.description
             }*  |\n`
@@ -204,7 +204,7 @@ function stringifyArgs(args, types) {
           return `*\` ${arg.name}:\`* ${stringifyType(
             getType(arg),
             types,
-          )},&nbsp;&nbsp;`;
+          )}&nbsp;&nbsp;`;
         })
         .join('') +
       last
