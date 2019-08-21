@@ -72,7 +72,7 @@ function replaceText(s, autoformat) {
     if (s.substring(0, 12) === 'generateInt(') {
       s = s.replace('generateInt(', '');
       let params = '';
-      while (s[0] !== ')') {
+      while (s[0] !== ')' && s.length > 0) {
         params = params + s[0];
         s = s.slice(1);
       }
@@ -81,14 +81,14 @@ function replaceText(s, autoformat) {
       output = output + generateInt(parseInt(params[0]), params[1] === 'true');
     }
     if (s.substring(0, 14) === 'generateFloat(') {
-      s = s.replace('generateFloat(')[1];
+      s = s.replace('generateFloat(');
       let params = '';
-      while (s[0] !== ')') {
+      while (s[0] !== ')' && s.length > 0) {
         params = params + s[0];
         s = s.slice(1);
       }
       s = s.slice(1);
-      params = params.split(" ");
+      params = params.replace('undefined', '').split(" ");
       output =
         output +
         generateFloat(
@@ -125,8 +125,7 @@ function generateString(length) {
   const max = characters.length - 1;
   let i = 0;
   while (i < length) {
-    output =
-      output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   return '"' + output + '"';
@@ -144,9 +143,12 @@ function generateInt(length, canBeNegative) {
   if (canBeNegative && Math.random() > 0.5) {
     output = output + '-';
   }
+  if (i < length) {
+    output = output + characters.charAt((Math.random() * (max - 1) + 1) | 0);
+    i++;
+  }
   while (i < length) {
-    output =
-      output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   return output;
@@ -165,9 +167,12 @@ function generateFloat(wholeLength, fractionalLength, canBeNegative) {
   if (canBeNegative && Math.random() > 0.5) {
     output = output + '-';
   }
+  if (i < wholeLength) {
+    output = output + characters.charAt((Math.random() * (max - 1) + 1) | 0);
+    i++;
+  }
   while (i < wholeLength) {
-    output =
-      output + characters.charAt((Math.random() * (max - min) + min) | 0);
+    output = output + characters.charAt((Math.random() * (max - min) + min) | 0);
     i++;
   }
   output = output + '.';

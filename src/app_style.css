@@ -110,12 +110,13 @@ hr {
 
 #appTable td:nth-child(1) {
   background-color: #ffffff;
-  width: 52% !important;
 }
 
 #appTable td:nth-child(2) {
   background-color: #f6f8f9;
-  width: 48% !important;
+  width: 50% !important;
+  overflow: hidden !important;
+  overflow-wrap: break-word !important;
 }
 
 /* Scrollbar */

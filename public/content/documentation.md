@@ -520,7 +520,7 @@ updatedAt
 
 The following is a list of all operations, enumerators, and objects available in the API.
 
-For an interactive reference, head to the [playground](https://chargetrip.innobyte.ro/graphql) and click on the "schema" tab.
+For an interactive reference, head to the [playground](https://playground.chargetrip.io/graphQL) and click on the "schema" tab.
 
 </Full>
 
@@ -594,7 +594,7 @@ For an interactive reference, head to the [playground](https://chargetrip.innoby
 
 ## Additional Information
 
-For more information about the API, go to the [playground](https://chargetrip.innobyte.ro/graphql), and click on Schema to view information on all operations and objects.
+For more information about the API, go to the [playground](https://playground.chargetrip.io/graphQL), and click on Schema to view information on all operations and objects.
 
 For more information about Chargetrip go to [chargetrip.com](https://chargetrip.com/).
 
