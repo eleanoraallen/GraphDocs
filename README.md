@@ -143,7 +143,7 @@ myFood: FoodType
 
 TypeList components
 
-`<TypeList printHeaders printDescriptions include exclude>typeKind</TypeList>`
+`<TypeList printHeaders printDescriptions include exclude showLines>typeKind</TypeList>`
 
 are used to print a list of types (Objects, Enums, Input_Objects, Scalars, Interfaces, or Unions). Types are sorted alphabetically and each type is generated dynamically, and will include links to any other types in its fields. To do this, simply put the name of the kind of type you want (one of: "Object" "Enum" "Input_Object" "Scalar" "Interface" "Union" or "all" if you want to print everything) to print between the tags. For instance `<TypeList>Object</TypeList>` would produce something like:
 
@@ -175,10 +175,14 @@ param1: Int
 param2: String
 }
 
+--------------------------------------
+
 type Object2 {
 param1: Int
 param2: Float
 }
+
+--------------------------------------
 
 type Object3 {
 param1: Float
@@ -186,6 +190,25 @@ param2: String
 }
 
 You may wish to print TypeLists that include only certain types, or that exclude certain types. To do this you can include the parameter(s) `include=[]` and/or `exclude=[]`. Both of these parameters take a list of strings seperated by spaces and enclosed within brackets. If include is not empty, the resulting list will include only types who's names can be found in include. Likewise, any types who's names can be found in exclude will not be included in the printed list. For example `<TypeList exclude=[Object2]>Object</TypeList>` would produce something like:
+
+Object1: Description of Object1
+
+type Object1 {
+param1: Int : Description for param1
+param2: String : Description for param2
+}
+
+--------------------------------------
+
+Object3: Description of Object1
+
+type Object3 {
+param1: Float : Description for param1
+param2: String : Description for param2
+}
+
+You may wish to print TypeList without lines seperating each type. To do this include the parameter showLines=false. For Example `<TypeList exclude=[Object2]>Object</TypeList>` would produce something like
+
 
 Object1: Description of Object1
 

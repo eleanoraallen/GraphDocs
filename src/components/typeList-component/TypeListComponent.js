@@ -18,7 +18,8 @@ function printTypes(
   exclude,
   printHeaders,
   printDescriptions,
-  types) {
+  types,
+  showLines) {
   const allTypes = types;
   include = include.map(s => s.toLowerCase());
   exclude = exclude.map(s => s.toLowerCase());
@@ -45,15 +46,20 @@ function printTypes(
     }
   });
   types = types.map(type => {
-    return (
-      <TypeComponent
-        typeName={type.name}
-        printHeader={printHeaders}
-        printDiscriptions={printDescriptions}
-        types={allTypes}
-      />
-    );
-  });
+    return(
+    <TypeComponent
+      typeName={type.name}
+      printHeader={printHeaders}
+      printDiscriptions={printDescriptions}
+      types={allTypes}/>);
+    });
+  if (showLines) {
+    let newTypes = [];
+    while (types.length > 1) {
+      newTypes = newTypes.concat([types.shift(), <hr width='90%'></hr>]);
+    }
+    types = newTypes.concat(types);
+  }
   return <div id='typeList'>{types}</div>;
 }
 
@@ -87,7 +93,8 @@ export default class TypeListComponent extends Component {
           this.props.exclude,
           this.props.printHeaders,
           this.props.printDescriptions,
-          this.props.types
+          this.props.types,
+          this.props.showLines
         )
     );
   }

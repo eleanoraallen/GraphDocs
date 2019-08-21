@@ -582,7 +582,7 @@ For an interactive reference, head to the [playground](https://chargetrip.innoby
 
 ### Enumerators
 
-<TypeList>Enum</TypeList>
+<TypeList printDescriptions=false>Enum</TypeList>
 
 </Full>
 

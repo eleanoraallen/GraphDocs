@@ -29,9 +29,7 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
             ': *null*',
             '',
           ) +
-          `  \n  enum ${type.name} {${stringifyValues(
-            type.enumValues,
-          )}  \n  }  \n\ \n \n`;
+          `  \n  | | | \n |-|-| \n | \`enum ${type.name} {\` | ${stringifyValues(type.enumValues, printDiscriptions)}`;
       }
       if (type.kind === 'OBJECT' && type.name === typeName) {
         printedType =
@@ -113,14 +111,21 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
   );
 }
 
-// stringifyValues(value) ==> String
-// takes an array of enumValues and returns it as a string to be parsed into markdown
-function stringifyValues(enumValues) {
-  return enumValues
-    .map(value => {
-      return `  \n &nbsp &nbsp &nbsp  **\`${value.name}\`**`;
+// stringifyValues(value, Boolean) ==> String
+// takes an array of enumValues and a boolean that is true iff descriptions should be printed
+// and returns it as a string to be parsed into markdown.
+function stringifyValues(enumValues, printDiscriptions) {
+  if (printDiscriptions) {
+    return '| | \n  ' + enumValues.map(value => {
+      return `| &nbsp &nbsp  \`${value.name}\` | ${value.description} |  \n  `;
     })
-    .join('');
+    .join('') + '| } | |';
+  } else {
+    return '| \n  ' + enumValues.map(value => {
+      return `| &nbsp &nbsp  \`${value.name}\` | |  \n  `;
+    })
+    .join('') + '| } | |  \n  | | | \n';
+  }
 }
 
 // stringifyFields([field], [type], String, String Boolean) ==> String

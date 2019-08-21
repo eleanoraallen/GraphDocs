@@ -321,6 +321,7 @@ function parseTypeList(toParse, types) {
   toParse = toParse.replace('>', '');
   const printHeaders = !props.includes('printHeaders=false');
   const printDescriptions = !props.includes('printDescriptions=false');
+  const showLines = !props.includes('showLines=false');
   let include = [];
   if (props.includes('include=[')) {
     include = props
@@ -350,6 +351,7 @@ function parseTypeList(toParse, types) {
       exclude={exclude}
       printHeaders={printHeaders}
       printDescriptions={printDescriptions}
+      showLines={showLines}
     />,
   ];
 }
