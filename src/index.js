@@ -94,7 +94,7 @@ function App() {
   // Determine how to render page
   const [renderOptions, setRenderOptions] = React.useState({
     shouldShowSidebar: window.innerWidth > 730,
-    shouldMergeColumns: window.innerWidth < 1310,
+    shouldMergeColumns: window.innerWidth < 1200,
     toReturn: <div>;</div>,
   });
 
@@ -102,7 +102,7 @@ function App() {
     const handleResize = function handleResize() {
       setRenderOptions({
         shouldShowSidebar: window.innerWidth > 730,
-        shouldMergeColumns: window.innerWidth < 1310,
+        shouldMergeColumns: window.innerWidth < 1200,
       });
     };
 
@@ -176,12 +176,11 @@ function App() {
       return <div />;
     } else {
       return (
-        <div>{String(window.innerWidth)}
         <ParseComponent
           input={Mainmd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-        /></div>
+        />
       );
     }
   }

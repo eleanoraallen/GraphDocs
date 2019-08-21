@@ -126,6 +126,12 @@ function parseLeft(toParse, shouldMergeColumns, data) {
     inside = inside.slice(1);
   }
   let rightCol = inside.replace('<Right>', '');
+  let rightContent;
+  if (!rightCol.includes('<Example')) {
+  rightContent = [parseInside(rightCol, data), <div id='darkMirror'><ExampleComponent input='Trans Rights!' autoformat={true} /></div>];
+  } else {
+    rightContent = parseInside(rightCol, data);
+  }
 
   if (shouldMergeColumns) {
     const leftTable = (
@@ -138,7 +144,7 @@ function parseLeft(toParse, shouldMergeColumns, data) {
     const rightTable = (
       <table id='appTable'>
         <tr>
-          <td>{[parseInside(rightCol, data)]}</td>
+          <td>{parseInside(rightCol, data)}</td>
         </tr>
       </table>
     );
@@ -148,7 +154,7 @@ function parseLeft(toParse, shouldMergeColumns, data) {
       <table id='appTable'>
         <tr>
           <td>{parseInside(leftCol, data)}</td>
-          <td>{parseInside(rightCol, data)}</td>
+          <td>{rightContent}</td>
         </tr>
       </table>
     );

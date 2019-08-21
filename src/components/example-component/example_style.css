@@ -146,9 +146,8 @@ button:active {
   color: black;
   direction: ltr;
   font-weight: normal !important;
-  width: auto;
-  overflow: hidden !important;
-  overflow-wrap: break-word !important;
+  width: 500px;
+  align-self: center !important;
 }
 
 /* PADDING */

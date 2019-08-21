@@ -88,6 +88,10 @@ hr {
   text-decoration: none !important;
 }
 
+#darkMirror {
+  visibility: hidden;
+}
+
 /* Table used to render content */
 #appTable td {
   vertical-align: top;
@@ -114,9 +118,7 @@ hr {
 
 #appTable td:nth-child(2) {
   background-color: #f6f8f9;
-  width: 50% !important;
-  overflow: hidden !important;
-  overflow-wrap: break-word !important;
+  width: 500px !important;
 }
 
 /* Scrollbar */
