@@ -138,7 +138,7 @@ function parseLeft(toParse, shouldMergeColumns, data) {
     const rightTable = (
       <table id='appTable'>
         <tr>
-          <td>{parseInside(rightCol, data)}</td>
+          <td>{[parseInside(rightCol, data)]}</td>
         </tr>
       </table>
     );

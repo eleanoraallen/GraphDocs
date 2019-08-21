@@ -77,16 +77,18 @@ function replaceText(s, autoformat) {
         s = s.slice(1);
       }
       s = s.slice(1);
+      params = params.split(" ");
       output = output + generateInt(parseInt(params[0]), params[1] === 'true');
     }
     if (s.substring(0, 14) === 'generateFloat(') {
-      s = s.split('generateFloat(')[1];
+      s = s.replace('generateFloat(')[1];
       let params = '';
       while (s[0] !== ')') {
         params = params + s[0];
         s = s.slice(1);
       }
       s = s.slice(1);
+      params = params.split(" ");
       output =
         output +
         generateFloat(

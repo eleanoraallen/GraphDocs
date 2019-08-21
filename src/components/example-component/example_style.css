@@ -62,17 +62,17 @@ button:active {
 
 /* Cursor */
 .cm-s-duotone-dark .CodeMirror-cursor {
-  border-left: 1px solid #7e7e7e; /* border-left: 1px solid #ffad5c80; */
-  border-right: 0.01em solid #7e7e7e; /* border-right: .5em solid #ffad5c80; */
+  border-left: 1px solid #7e7e7e;
+  border-right: 0.01em solid #7e7e7e;
   opacity: 0.5;
 }
 .cm-s-duotone-dark .CodeMirror-activeline-background {
-  background: #363342; /* background: #36334280;  */
+  background: #363342;
   opacity: 0.5;
 }
 
 .cm-s-duotone-dark .cm-cursor .CodeMirror-cursor {
-  background: #7e7e7e; /* background: #ffad5c80; */
+  background: #7e7e7e;
   opacity: 0.5;
 }
 
@@ -146,7 +146,7 @@ button:active {
   color: black;
   direction: ltr;
   font-weight: normal !important;
-  width: 500px;
+  /* width: 500px; */
 }
 
 /* PADDING */
