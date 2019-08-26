@@ -8,8 +8,10 @@ import { mainPage, otherPages } from './custom/pages';
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// getMainMd() ==> String
-// asyncronous function that gets the content for the main page from the mainPage markdown file
+/**
+ * Asyncronous function that gets the content for the main page from the mainPage markdown file
+ * @return<String> The contents of the mainPage .md file
+ */
 async function getMainMd() {
   try {
     const res = await fetch('content/' + mainPage);
@@ -19,8 +21,10 @@ async function getMainMd() {
 }
 getMainMd();
 
-// getMainMd() ==> String
-// asyncronous function that gets the content for the main page from the otherPages[0] markdown file
+/**
+ * Asyncronous function that gets the content for the main page from the otherPages[0] markdown file
+ * @return<String> The contents of the .md file at otherPages[0]
+ */
 async function getOneMd() {
   try {
     const res = await fetch('content/' + otherPages[0]);
@@ -30,8 +34,10 @@ async function getOneMd() {
 }
 getOneMd();
 
-// getMainMd() ==> String
-// asyncronous function that gets the content for the main page from the otherPages[1] markdown file
+/**
+ * Asyncronous function that gets the content for the main page from the otherPages[1] markdown file
+ * @return<String> The contents of the .md file at otherPages[1]
+ */
 async function getTwoMd() {
   try {
     const res = await fetch('content/' + otherPages[1]);
@@ -41,8 +47,10 @@ async function getTwoMd() {
 }
 getTwoMd();
 
-// getMainMd() ==> String
-// asyncronous function that gets the content for the main page from the otherPages[2] markdown file
+/**
+ * Asyncronous function that gets the content for the main page from the otherPages[2] markdown file
+ * @return<String> The contents of the .md file at otherPages[2]
+ */
 async function getThreeMd() {
   try {
     const res = await fetch('content/' + otherPages[2]);
@@ -57,8 +65,6 @@ getThreeMd();
 //  ----------------------------------------------------------------------------------------
 
 function App() {
-  // ## Constants ----------------------------------------
-
   // Get main documenation markdown content
   const [Mainmd, setMainMd] = useState(null);
   useEffect(async () => {
@@ -98,6 +104,7 @@ function App() {
     toReturn: <div>;</div>,
   });
 
+  // Detirmine if page needs to rerender
   React.useEffect(() => {
     const handleResize = function handleResize() {
       setRenderOptions({
@@ -112,7 +119,7 @@ function App() {
       window.removeEventListener('resize', handleResize);
     };
   });
-  // ## Render ----------------------------------------
+  
   // Render Reference Request
   if (pageText.includes('printType:')) {
     let input = '';

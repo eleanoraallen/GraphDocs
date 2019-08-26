@@ -16,9 +16,16 @@ const ReferenceLink = (
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// makeType(String, [type]) ==> <ReactMarkdown />
-// takes the name of a type (Scalar, 0bject, Input-Object, Interface, Union or Enum) and an array of types
-// represenging all types in the schema (to be used to make links) and prints the named type using react-markdown
+/**
+ * prints a given type using react-markdown
+ * 
+ * @param typeName<String> the name of the type to be printed (one of: Scalar, 0bject, Input-Object, Interface, Union or Enum)
+ * @param printHeader<Boolean> true iff the header of the given type should be printed
+ * @param printDiscriptions<Boolean> true iff the type's field descriptions should be printed
+ * @param types<[Type]> the array of all types in the schema (to be used to make links)
+ * 
+ * @return<ReactMarkdown /> The type printed according to the given parameters
+ */
 function makeType(typeName, printHeader, printDiscriptions, types) {
   const filtered = types
     .map(type => {
@@ -36,12 +43,7 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
           `  \n  **${type.name}**: *${
             type.description
           }*  \n  \`\`  \n  `.replace(': *null*', '') +
-          stringifyFields(
-            type.fields, 
-            types, 
-            type.name,
-            'type',
-            printDiscriptions);
+          stringifyFields(type.fields, types, type.name, 'type', printDiscriptions);
       }
       if (type.kind === 'INPUT_OBJECT' && type.name === typeName) {
         printedType =
@@ -61,12 +63,7 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
           `  \n  **${type.name}**: *${
             type.description
           }*  \n  \`\`  \n  `.replace(': *null*', '') +
-          stringifyFields(
-            type.fields, 
-            types, 
-            type.name,
-            'interface', 
-            printDiscriptions);
+          stringifyFields(type.fields, types, type.name, 'interface', printDiscriptions);
       }
       if (type.kind === 'UNION' && type.name === typeName) {
         printedType =
@@ -111,9 +108,14 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
   );
 }
 
-// stringifyValues(value, Boolean) ==> String
-// takes an array of enumValues and a boolean that is true iff descriptions should be printed
-// and returns it as a string to be parsed into markdown.
+/**
+ * returns an Enum's values as a markdown parsable string
+ * 
+ * @param enumValues<[value]> the array of an Enum's values
+ * @param printDiscriptions<Boolean> true iff the value's descriptions should be printed
+ * 
+ * @return<String> A markdown parsable string representing enumValues
+ */
 function stringifyValues(enumValues, printDiscriptions) {
   if (printDiscriptions) {
     return '| | \n  ' + enumValues.map(value => {
@@ -128,17 +130,24 @@ function stringifyValues(enumValues, printDiscriptions) {
   }
 }
 
-// stringifyFields([field], [type], String, String Boolean) ==> String
-// takes an array of Fields or inputFields, an array of types represenging all types in the schema (to be used to
-// make links), the name of the type to which the Fields belong, the type of that type, and a boolean which is true iff
-// the field descriptions are to be printed, and returns the fields as a string to be rendered in markdown.
+/**
+ * returns a given array of fields or inputFields as a markdown parsable string
+ * 
+ * @param fields<[Field]> an array of Fields or inputFields
+ * @param types<[Type]> the array of all types in the schema (to be used to make links)
+ * @param parentName<String> the name of the type from which fields was taken
+ * @param parentOfType<String> the kind of type parentName was
+ * @param printDiscriptions<Boolean> True iff the Field's discriptions should be printed
+ * 
+ * @return<String> a markdown parsable string representing fields
+ */
 function stringifyFields(fields, types, parentName, parentOfType, printDiscriptions) {
   if (printDiscriptions) {
     return (
-      `  \n  | **\`${parentOfType}\`** ${stringifyType(parentName, types,)} \`{\` | |  \n  |-|-|  \n  ` +
+      `  \n  | **\`${parentOfType}\`** ${makeLink(parentName, types,)} \`{\` | |  \n  |-|-|  \n  ` +
       fields.map(type => {
           return (
-            `  | &nbsp; &nbsp; \`${type.name}:\` ${stringifyType(getType(type), types)} | ` + 
+            `  | &nbsp; &nbsp; \`${type.name}:\` ${makeLink(getType(type), types)} | ` + 
             `${String(type.description).replace('null', '')} |  \n`
             );
         })
@@ -147,10 +156,10 @@ function stringifyFields(fields, types, parentName, parentOfType, printDiscripti
       ' | ```}``` | |  \n  ');
   } else {
     return (
-      `  \n  | **\`${parentOfType}\`** ${stringifyType(parentName, types,)} \`{\` |  \n  |-|  \n  ` +
+      `  \n  | **\`${parentOfType}\`** ${makeLink(parentName, types,)} \`{\` |  \n  |-|  \n  ` +
       fields.map(type => {
           return (
-            `  | &nbsp; &nbsp; \`${type.name}:\` ${stringifyType(getType(type), types)} |  \n`
+            `  | &nbsp; &nbsp; \`${type.name}:\` ${makeLink(getType(type), types)} |  \n`
             );
         })
         .sort()
@@ -159,11 +168,18 @@ function stringifyFields(fields, types, parentName, parentOfType, printDiscripti
   }
 }
 
-// stringifyType(String, [type]) ==> String
-// Takes the name of a type and an array of all types and returns the type as a string (builds links)
-function stringifyType(typeName, types) {
-  const matchedType = types.filter(aType => aType.name === typeName);
-  const tString = ` \`${typeName}\``;
+/**
+ * takes a string and, if it is the name of a type, makes it a link to that type
+ * 
+ * @param s<String> a string that may or may not be the name of a type
+ * @param types<[Type]> the array of all types in the schema (to be used to make links)
+ * 
+ * @return<String> eithier the given string or, if the given string is the name of a type
+ *        a markdown parsable link to the named type
+ */
+function makeLink(s, types) {
+  const matchedType = types.filter(aType => aType.name === s);
+  const tString = ` \`${s}\``;
   if (matchedType.length === 1) {
     return `[${tString}](http://${ReferenceLink})`.replace(
       'NAME',
@@ -174,8 +190,11 @@ function stringifyType(typeName, types) {
   }
 }
 
-// printType(type) ==> String
-/// takes some kind of type and prints that type's name
+/**
+ * returns the name of a given type
+ * @param t<Type> Some kind of type
+ * @return<String> The name of the given type
+ */
 function getType(t) {
   let s = '';
   try {
@@ -205,12 +224,10 @@ function getType(t) {
 
 // Component Class
 export default class TypeComponent extends Component {
-  // Constructor
   constructor(props) {
     super(props);
   }
 
-  // Render
   render() {
     return makeType(
       this.props.typeName,

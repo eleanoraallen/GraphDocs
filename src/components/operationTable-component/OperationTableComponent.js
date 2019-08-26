@@ -16,12 +16,16 @@ const ReferenceLink = (
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// printFilteredOperations(String, [String], [String]) ==> <Query />
-// takes the name of a type of operation: (one of: 'operation', 'query', 'mutation', 'subscription'), and two
-// arrays of strings and produces a Query that will produce a table of operations of the specified type that all
-// include at least one instance of at least one string from the first array in their name, arguments, or output,
-// and do not include any instances of any of the strings in the second array in its name, arguments, or output.
-// If both arrays are empty, produces a table of all operations of the specified type.
+/**
+ * returns the specified peration table as a react component
+ * 
+ * @param operationType<String> the name of a type of operation (one of: 'operation', 'query', 'mutation', 'subscription')
+ * @param include<[String]> an array of names of operations to be included in the printed list (if empty then all are included)
+ * @param exclude<[String]> an array of names of operations to be excluded from the printed list (if empty none are excluded)
+ * @param data<data> the results of a schema introspection query
+ * 
+ * @return<ReactElement> The operation table
+ */
 function printFilteredOperations(operationType, include, exclude, data) {
   if (operationType === 'query') {
     return(
@@ -74,13 +78,16 @@ function printFilteredOperations(operationType, include, exclude, data) {
       ));
   }
 }
-        
 
-// filterOperations([operation], [String], [String]) ==> [operation]
-// Takes an array of the operation type (eg. queryType) and two arrays of strings and filters the array of operations s.t
-// each operation in the resulting array will inclue at least one instance of at least one string from the first array in their
-//  name, arguments, or output, and do not include any instances of any of the strings in the second array in its name, arguments,
-//  or output. If both arrays are empty, returns the array of operations unchanged.
+/**
+ * filters an array of operations
+ * 
+ * @param operations<[operation]> an array of operations
+ * @param include<[String]> an array of names of operations to be included in the filtered list (if empty then all are included)
+ * @param exclude<[String]> an array of names of operations to be excluded from the filtered list (if empty then none are excluded)
+ * 
+ * @return<[operation]> the filtered array of operations
+ */
 function filterOperations(operations, include, exclude) {
   if (include.length === 0 && exclude.length === 0) {
     return operations;
@@ -148,10 +155,15 @@ function filterOperations(operations, include, exclude) {
   });
 }
 
-// printTable([operation], [type], String) ==> <ReactMarkdown />
-// takes an array of operations (operation types eg. queryType), an array of types representing all the types
-// in the schema (which is used to make links), and the name of the left column of the table to be printed,
-// and prints the array of operations as a table
+/**
+ * returns a given array of operations as a table rendered w/ ReactMarkdown
+ * 
+ * @param operations<[operation]> an array of operations
+ * @param types<[type]> the array of all types in the schema
+ * @param tableName<String> the name of the leftmost column in the table to be printed
+ * 
+ * @return<ReactMarkdown /> the filtered array of operations
+ */
 function printTable(operations, types, tableName) {
   const tableString =
     `| ${tableName} | Description |\n| - | - |\n` +
@@ -187,12 +199,17 @@ function printTable(operations, types, tableName) {
   );
 }
 
-// stringifyArgs([arg], [type]) ==> String
-// takes an array of args and an array of types  representing all the types in the schema (which is used to make links)
-// and returns the array of args a string that can be parsed into markdown
+/**
+ * returns an array of args as a markdown string
+ * 
+ * @param args<[arg]> an array of operations
+ * @param types<[type]> the array of all types in the schema
+ * 
+ * @return<String> the args as a string
+ */
 function stringifyArgs(args, types) {
   if (args.length > 1) {
-    const last = `*\`${args[args.length - 1].name}: \`* ${stringifyType(
+    const last = `*\`${args[args.length - 1].name}: \`* ${makeLink(
       getType(args[args.length - 1]),
       types,
     )}*\`)\`*`;
@@ -201,7 +218,7 @@ function stringifyArgs(args, types) {
       '`(`' +
       args
         .map(arg => {
-          return `*\` ${arg.name}:\`* ${stringifyType(
+          return `*\` ${arg.name}:\`* ${makeLink(
             getType(arg),
             types,
           )}&nbsp;&nbsp;`;
@@ -211,7 +228,7 @@ function stringifyArgs(args, types) {
     );
   }
   if (args.length === 1) {
-    return `\`(\`*\`${args[0].name}: \`* ${stringifyType(
+    return `\`(\`*\`${args[0].name}: \`* ${makeLink(
       getType(args[0]),
       types,
     )}*\`)\`*`;
@@ -220,11 +237,18 @@ function stringifyArgs(args, types) {
   }
 }
 
-// stringifyType(String, [type]) ==> String
-// Takes the name of a type and an array of all types and returns the type as a string (builds links)
-function stringifyType(typeName, types) {
-  const matchedType = types.filter(aType => aType.name === typeName);
-  const tString = ` \`${typeName}\``;
+/**
+ * takes a string and, if it is the name of a type, makes it a link to that type
+ * 
+ * @param s<String> a string that may or may not be the name of a type
+ * @param types<[Type]> the array of all types in the schema (to be used to make links)
+ * 
+ * @return<String> eithier the given string or, if the given string is the name of a type
+ *        a markdown parsable link to the named type
+ */
+function makeLink(s, types) {
+  const matchedType = types.filter(aType => aType.name === s);
+  const tString = ` \`${s}\``;
   if (matchedType.length === 1) {
     return `[${tString}](http://${ReferenceLink})`.replace(
       'NAME',
@@ -235,8 +259,11 @@ function stringifyType(typeName, types) {
   }
 }
 
-// printType(type) ==> String
-/// takes some kind of type and prints that type's name
+/**
+ * returns the name of a given type
+ * @param t<Type> Some kind of type
+ * @return<String> The name of the given type
+ */
 function getType(t) {
   let s = '';
   try {
@@ -260,20 +287,25 @@ function getType(t) {
   return s.replace('null', '');
 }
 
-// stringifyOutput(operation, [type]) ==> String
-// takes an operation type (eg. queryType) and an array of all types in the schema (which is used to make links)
-// and returns the expected output of the operation as a string to be rendered in markdown
+/**
+ * returns the output of on operation
+ * 
+ * @param operation<operation> an operation (eg. queryType)
+ * @param types<[Type]> the array of all types in the schema (to be used to make links)
+ * 
+ * @return<String> the output of the given operation
+ */
 function stringifyOutput(operation, types) {
   if (operation.name === null) {
     let outputString;
     if (operation.ofType.name != null) {
-      outputString = stringifyType(operation.ofType.name, types);
+      outputString = makeLink(operation.ofType.name, types);
     } else {
-      outputString = stringifyType(operation.ofType.ofType.name, types);
+      outputString = makeLink(operation.ofType.ofType.name, types);
     }
     return `\`[\`${outputString.replace(' ', '')}\`]\``;
   } else {
-    return stringifyType(operation.name, types).replace(' ', '');
+    return makeLink(operation.name, types).replace(' ', '');
   }
 }
 
@@ -283,12 +315,10 @@ function stringifyOutput(operation, types) {
 
 // Component Class
 export default class OperationTableComponent extends Component {
-  // Constructor
   constructor(props) {
     super(props);
   }
 
-  // Render
   render() {
     return(
       printFilteredOperations(

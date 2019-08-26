@@ -53,9 +53,14 @@ let outputOptions = {
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// replaceText(String, Boolean) ==> String
-// takes a string that is the input for an example and a boolean which is true iff the text is to be formatted
-// and the string but with calls to generate inputs fufilled and (if the boolean is true) the text autoformatted
+/**
+ * autoformats/replaces generated input in an example's input
+ * 
+ * @param s<String> the input for an example
+ * @param autoformat<Boolean> true iff text should be autoformatted
+ * 
+ * @return<String> the formatted/replaced string
+ */
 function replaceText(s, autoformat) {
   let output = '';
   while (s.length > 0) {
@@ -108,15 +113,20 @@ function replaceText(s, autoformat) {
   }
 }
 
-// formatText(String) ==> String
-// Takes a string that is the input for an example and returns a string that is the same as the given
-// string but formatted to look good in a codemirror window.
+/**
+ * autoformats a given string
+ * @param s<String> the input for an example
+ * @return<String> the formatted string
+ */
 function formatText(s) {
   return js_beautify(s, { indent_size: 2 });
 }
 
-// generateString(Int) ==> String
-// Takes an int and produces a string of random characters who's length is equal to the given int
+/**
+ * randomly generates a string of a given length
+ * @param length<Int> the number of characters in the string
+ * @return<String> the generated string
+ */
 function generateString(length) {
   let output = '';
   const characters =
@@ -131,9 +141,14 @@ function generateString(length) {
   return '"' + output + '"';
 }
 
-// generateInt(Int, Boolean) ==> String
-// takes an int and a boolean and produces a string representing a randomly generated int. The number of didgets in
-// the int is equal to the given int. If the boolean is true, the int has a 50% chance of being negative.
+/**
+ * randomly generates a string representing an int of a given length
+ * 
+ * @param length<Int> the number of didgets in the int
+ * @param canBeNegative<Boolean> true iff the int can be negative
+ * 
+ * @return<String> the generated int
+ */
 function generateInt(length, canBeNegative) {
   let output = '';
   const characters = '0123456789';
@@ -154,10 +169,15 @@ function generateInt(length, canBeNegative) {
   return output;
 }
 
-// generateFloat(Int, Int, Boolean) ==> String
-// takes two ints and a boolean and produces a string representing a randomly generated float. The number of
-// digits in the float's whole part is equal to the first int, while the number of didgets in the fractional
-// part is equal to the second int. If the given boolean is true the float has a 50% chance of being negative.
+/**
+ * randomly generates a string representing a float of a given length
+ * 
+ * @param wholeLength<Int> the number of didgets in the whole part
+ * @param fractionalLength<Int> the number of didgets in the fractional part
+ * @param canBeNegative<Boolean> true iff the float can be negative
+ * 
+ * @return<String> the generated float
+ */
 function generateFloat(wholeLength, fractionalLength, canBeNegative) {
   let output = '';
   const characters = '0123456789';
@@ -185,14 +205,20 @@ function generateFloat(wholeLength, fractionalLength, canBeNegative) {
   return output;
 }
 
-// printOutput(String) ==> <CodeMirror />
-// takes a string and produces a CodeMirror component with the given string as its value
+/**
+ * returns a given input as a CodeMirror Window
+ * @param str<String> the input for the codemirror window
+ * @return<CodeMirror /> the produced component
+ */
 function printOutput(str) {
   return <CodeMirror id='mirrorWindow' value={str} options={outputOptions} />;
 }
 
-// getStartingInput(String) ==> String
-// Takes a string that represents some starting texd and returns the proper value of ExampleComponent.state.inputText
+/**
+ * gets the value of inputText
+ * @param startingText<String> the starting text
+ * @return<String> the proper value of ExampleComponent.state.inputText
+ */
 function getStartingInput(startingText) {
   let startingInput;
   if (inputIsOperation(startingText, 'mutation')) {
@@ -203,9 +229,14 @@ function getStartingInput(startingText) {
   return startingInput;
 }
 
-// inputIsOperation(String, String) ==> Boolean
-// Takes a string that represents some input and another string that is one of: 'query' 'mutation' or 'subscription'
-// and returns true iff input should be an instance of the given operation type
+/**
+ * determines if a given string is an operation of the given type
+ * 
+ * @param input<String> some input
+ * @param operation<STring> the type of operation (one of: 'query' 'mutation' or 'subscription')
+ * 
+ * @return<Boolean> true iff the given input is an operation of the given type
+ */
 function inputIsOperation(input, operation) {
   var spaceSplit = input.split(' ');
   var OBSplit = input.split('{');
@@ -215,10 +246,20 @@ function inputIsOperation(input, operation) {
   );
 }
 
-// printOutputWindow(loadding, data, error, boolean) ==> <CodeMirror /> | <p />
-// takes the loading, data, and error params that result from a Query, Mutation, or Subscription and
-// prints the result, unless the given boolean is true in which case it will produce an empty string.
+/**
+ * returns a window containing the output of a Query, Mutation, or Subscription
+ * 
+ * @param loading<loading> the loading data from an operation
+ * @param data<data> the data from an operation
+ * @param error<error> the error data from an operation
+ * @param override<Boolean> true if function should produce an empty window regardless of other fields
+ * 
+ * @return<ReactComponent /> the result of the operation
+ */
 function printOutputWindow(loading, data, error, override) {
+  if (override) {
+    return '';
+  }
   if (loading) {
     return 'Loading...';
   }
@@ -227,9 +268,6 @@ function printOutputWindow(loading, data, error, override) {
   }
   if (data) {
     return printOutput(JSON.stringify(data, null, 2));
-  }
-  if (override) {
-    return '';
   } else {
     return printOutput('');
   }
@@ -253,7 +291,10 @@ export default class ExampleComponent extends Component {
     };
   }
 
-  // Updates the 'code' field
+ /**
+ * updates the code field
+ * @param newCode<String> the new code
+ */
   updateCode(newCode) {
     this.setState({
       code: newCode,
@@ -261,7 +302,10 @@ export default class ExampleComponent extends Component {
     });
   }
 
-  // Builds a Query Component
+ /**
+ * renders a query
+ * @return<Query> the query component to be rendered
+ */
   renderQuery() {
     try {
       return (
@@ -277,7 +321,10 @@ export default class ExampleComponent extends Component {
     }
   }
 
-  // Builds a Mutation Component
+/**
+ * renders a mutation
+ * @return<Mutation> the mutation component to be rendered
+ */
   renderMutation() {
     if (inputIsOperation(this.state.code, 'mutation')) {
       try {
@@ -334,23 +381,31 @@ export default class ExampleComponent extends Component {
     }
   }
 
-  // Builds a Subscription Component
-  renderSubscription() {
-    try {
-      return (
-        <Subscription subscription={gql(this.state.inputText)}>
-          {({ loading, data, error }) => {
-            this.setOutputText(loading, data, error);
-            return printOutputWindow(loading, data, error);
-          }}
-        </Subscription>
-      );
-    } catch {
-      return printOutput('');
-    }
+/**
+ * renders a subscription
+ * @return<Mutation> the subscription component to be rendered
+ */
+renderSubscription() {
+  try {
+    return (
+      <Subscription subscription={gql(this.state.inputText)}>
+        {({ loading, data, error }) => {
+          this.setOutputText(loading, data, error);
+          return printOutputWindow(loading, data, error);
+        }}
+      </Subscription>
+    );
+  } catch {
+    return printOutput('');
   }
+}
 
-  // sets the component's outputText
+ /**
+ * sets this.outputText
+ * @param loading<loading> the loading data from an operation
+ * @param data<data> the data from an operation
+ * @param error<error> the error data from an operation
+ */
   setOutputText(loading, data, error) {
     if (loading) {
       this.state.outputText = 'loading...';
@@ -363,7 +418,10 @@ export default class ExampleComponent extends Component {
     }
   }
 
-  // Determines what Component to build and builds it
+  /**
+ * determines what component to render and renders it
+ * @return<ReactComponent> the component that should be rendered given this component's states
+ */
   renderOutput() {
     if (
       inputIsOperation(this.state.inputText, 'query') &&
@@ -394,7 +452,6 @@ export default class ExampleComponent extends Component {
     }
   }
 
-  // Render
   render() {
     return (
       <ApolloProvider client={client}>

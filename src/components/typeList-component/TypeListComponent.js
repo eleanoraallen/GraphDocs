@@ -6,12 +6,20 @@ import TypeComponent from '../type-component/TypeComponent';
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// printTypes(String, [String], [String], Boolean, Boolean, [Type]) ==> <Query />
-// takes the a kind of type (one of 'object', 'enum', 'input_object', 'interface', 'union', 'scalar', or 'all'), two
-// arrays of strings, two booleans, and the array of types and returns a div containing the array of types of the given
-// kind who's name's are in the first array and not the second. If both arrays are empty, prints the list of all types 
-// of the given kind. If the first boolean is true the printed types will have headers. If the second is true, the 
-// printed types will have descriptions.
+/**
+ * returns a div containing a printed list of types that conforms to given parameters
+ * 
+ * @param typeKind<String> the kind of type being printed 
+ *                (one of 'object', 'enum', 'input_object', 'interface', 'union', 'scalar', or 'all')
+ * @param include<[String]> an array of names of types to be included in the printed list (if empty then all are included)
+ * @param exclude<[String]> an array of names of types to be excluded from the printed list (if empty none are excluded)
+ * @param printHeaders<Boolean> true iff types' headers should be printed
+ * @param printDescriptions<Boolean> true iff types' field descriptions should be printed
+ * @param types<[Type]> the array of all types
+ * @param showLines<Boolean> true iff lines should be inserted to seperate printed types
+ * 
+ * @return a div containing the array of types of the given kind who's names are in include and not in exclude
+ */
 function printTypes(
   typeKind,
   include,
@@ -63,8 +71,11 @@ function printTypes(
   return <div id='typeList'>{types}</div>;
 }
 
-// shouldSkip(String) ==> Boolean
-// Takes the name of a type and returns true iff it should be skipped
+/**
+ * Takes the name of a type and returns true iff it should be skipped
+ * @param name<String> the name of a type
+ * @return<Boolean> True iff the given type should be skipped when printing
+ */
 function shouldSkip(name) {
   return (
     name === 'Query' ||
@@ -80,12 +91,10 @@ function shouldSkip(name) {
 
 // Component Class
 export default class TypeListComponent extends Component {
-  // Constructor
   constructor(props) {
     super(props);
   }
 
-  // Render
   render() {
     return (printTypes(
           this.props.typeKind,

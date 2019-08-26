@@ -45,9 +45,14 @@ const QueryString = 'query{__schema{ ' +
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
-// parseBody(String, Boolean) ==> <div>{[ReactComponent]}</div>
-// Takes a string that is the contents of some .md file and a boolean which is true iff the content should be
-// rendered all in one column and parses the string, producing a div which contains the contents of the .md file's body.
+/**
+ * parses the body of a page
+ * 
+ * @param toParse<String> the string to be parsed (generaly the contents of some .md file)
+ * @param shouldMergeColumns<Boolean> true iff columns should be merged
+ * 
+ * @return<div>{[ReactComponent]}</div> the parsed body of the page
+ */
 function parseBody(toParse, shouldMergeColumns) {
   toParse = removeComments(toParse);
   return(
@@ -77,10 +82,14 @@ function parseBody(toParse, shouldMergeColumns) {
   );
 }
 
-// parseBodyInside(String, Boolean, data) ==> <div>{[ReactComponent]}</div>
-// Takes a string that is the contents of some .md file up to an instance of <Body> exclusive, a boolean which is true iff the
-// content should be rendered all in one column, and a the data resulting from an introspection query and parses the string to 
-// the first instance of </Body> inclusicve, returning the result.
+/**
+ * parses the inside of a page's body
+ * 
+ * @param toParse<String> the string to be parsed up to an instance of <Body> exclusive
+ * @param shouldMergeColumns<Boolean> true iff columns should be merged
+ * 
+ * @return<div>{[ReactComponent]}</div> the parsed body of the page
+ */
 function parseBodyInside(toParse, shouldMergeColumns, data) {
   let output = [];
   while (toParse.length > 0) {
@@ -104,11 +113,16 @@ function parseBodyInside(toParse, shouldMergeColumns, data) {
   return <div>{output}</div>;
 }
 
-// parseBodyInside(String, Boolean, data) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file up to an instance of <Left> exclusive, a boolean which is true iff the 
-// result should be rendered as one column, and the data resulting from an introspection query and parses the string to the 
-// first instance of </Right> inclusive, returning an array where the first element is the rest of the string after </Right> 
-// and the second element the an array of react components that is the result of the parse.
+/**
+ * parses a string from an instance of <Left> to its coresponding </Right>
+ * 
+ * @param toParse<String> the string to be parsed up to an instance of <Left> exclusive
+ * @param shouldMergeColumns<Boolean> true iff columns should be merged
+ * @param data<data> the data resulting from a schema introspection query
+ * 
+ * @return<[String, <div>{[ReactComponent]}</div>]> An array who's first element is the rest of the string after </Right> exclusive
+ *        and the second element the an array of react components that is the result of the parse.
+ */
 function parseLeft(toParse, shouldMergeColumns, data) {
   let inside = '';
   while (toParse.substring(0, 8) !== '</Right>') {
@@ -162,11 +176,15 @@ function parseLeft(toParse, shouldMergeColumns, data) {
   }
 }
 
-// parseFull(String, data) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file up to an instance of <Full> exclusive, the data resulting from
-// an introspection query, and the array of types and parses the string up to the first instance of </Full> inclusive, 
-// returning an array where the first element is the rest of the string after </Full> and the second element is the array
-// of react components that is the result of the parse.
+/**
+ * parses a string from an instance of <Full> to its coresponding </Full>
+ * 
+ * @param toParse<String> the string to be parsed up to an instance of <Left> exclusive
+ * @param data<data> the data resulting from a schema introspection query
+ * 
+ * @return<[String, <div>{[ReactComponent]}</div>]> An array who's first element is the rest of the string after </Full> exclusive
+ *        and the second element the an array of react components that is the result of the parse.
+ */
 function parseFull(toParse, data) {
   let inside = '';
   while (toParse.substring(0, 7) !== '</Full>') {
@@ -184,15 +202,19 @@ function parseFull(toParse, data) {
   return [toParse, outputTable];
 }
 
-// parseInside(String, data) ==> [String, <div>{[ReactComponent]}</div>]
-// Takes a string that is the contents of some .md file between instances of <Left></Left>, <Right></Right> or <Full></Full> 
-// tags, and the data resulting from an introspection query and parses the string, returning the array of react components 
-// that is the result of the parse.
-function parseInside(s, data) {
+/**
+ * parses the inside of a body element (<Left>, <Right>, or <Full>)
+ * 
+ * @param toParse<String> the string to be parsed
+ * @param data<data> the data resulting from a schema introspection query
+ * 
+ * @return<div>{[ReactComponent]}</div> the parsed string
+ */
+function parseInside(toParse, data) {
   let output = [];
   let section = '';
-  while (s.length > 0) {
-    if (s.substring(0, 8) === '<Example') {
+  while (toParse.length > 0) {
+    if (toParse.substring(0, 8) === '<Example') {
       output.push(
         <ReactMarkdown
           source={section}
@@ -200,11 +222,11 @@ function parseInside(s, data) {
         />,
       );
       section = '';
-      const parsed = parseExample(s.replace('<Example', ''));
+      const parsed = parseExample(toParse.replace('<Example', ''));
       output.push(parsed[1]);
-      s = parsed[0];
+      toParse = parsed[0];
     }
-    if (s.substring(0, 9) === '<TypeList') {
+    if (toParse.substring(0, 9) === '<TypeList') {
       output.push(
         <ReactMarkdown
           source={section}
@@ -212,10 +234,10 @@ function parseInside(s, data) {
         />,
       );
       section = ''
-      const parsed = parseTypeList(s.replace('<TypeList', ''), data.__schema.types);
+      const parsed = parseTypeList(toParse.replace('<TypeList', ''), data.__schema.types);
       output.push(parsed[1]);
-      s = parsed[0];
-    } else if (s.substring(0, 5) === '<Type') {
+      toParse = parsed[0];
+    } else if (toParse.substring(0, 5) === '<Type') {
       output.push(
         <ReactMarkdown
           source={section}
@@ -223,11 +245,11 @@ function parseInside(s, data) {
         />,
       );
       section = ''
-      const parsed = parseType(s.replace('<Type', ''), data.__schema.types);
+      const parsed = parseType(toParse.replace('<Type', ''), data.__schema.types);
       output.push(parsed[1]);
-      s = parsed[0];
+      toParse = parsed[0];
     }
-    if (s.substring(0, 15) === '<OperationTable') {
+    if (toParse.substring(0, 15) === '<OperationTable') {
       output.push(
         <ReactMarkdown
           source={section}
@@ -235,11 +257,11 @@ function parseInside(s, data) {
         />,
       );
       section = ''
-      const parsed = parseOperationTable(s.replace('<OperationTable', ''), data);
+      const parsed = parseOperationTable(toParse.replace('<OperationTable', ''), data);
       output.push(parsed[1]);
-      s = parsed[0];
+      toParse = parsed[0];
     }
-    if (s.substring(0, 6) === '<Line>') {
+    if (toParse.substring(0, 6) === '<Line>') {
       output.push(
         <ReactMarkdown
           source={section}
@@ -248,10 +270,10 @@ function parseInside(s, data) {
       );
       section = '';
       output.push(<hr />);
-      s = s.replace('<Line>', '');
+      toParse = toParse.replace('<Line>', '');
     } else {
-      section = section + s[0];
-      s = s.slice(1);
+      section = section + toParse[0];
+      toParse = toParse.slice(1);
     }
   }
   output.push(
@@ -263,10 +285,12 @@ function parseInside(s, data) {
   return output;
 }
 
-// parseExample(String) ==> <ExampleComponent />
-// Takes a string that is the contents of some .md file up to an instance of <Example exclusive and parses the string
-// up to the first instance of </Example> inclusive, returning an array where the first element is the rest of the string
-// after </Example> and the second element is the ExampleComponent that is the result of the parse.
+/**
+ * parses an Example
+ * @param toParse<String> the string to be parsed up to an instance of '<Example' exclusive
+ * @return<[String, <ExampleComponent />]> an array who's first element is the rest of the given string after '</Example>' exclusive
+ *        and who's second is the parsed ExampleComponent
+ */
 function parseExample(toParse) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
@@ -284,10 +308,15 @@ function parseExample(toParse) {
   return [toParse, <ExampleComponent input={input} autoformat={autoformat} />];
 }
 
-// parseType(String, data) ==> <TypeComponent />
-// Takes a string that is the contents of some .md file up to an instance of <Type exclusive and the array of types and
-// parses the string up to the first instance of </Type> inclusive, returning an array where the first element is the 
-// rest of the string after </Type> and the second element is the TypeComponent that is the result of the parse.
+/**
+ * parses a Type
+ * 
+ * @param toParse<String> the string to be parsed up to an instance of '<Type' exclusive
+ * @param data<data> the data resulting from a schema introspection query
+ * 
+ * @return<[String, <TypeComponent />]> an array who's first element is the rest of the given string after '</Type>' exclusive
+ *        and who's second is the parsed Type
+ */
 function parseType(toParse, types) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
@@ -314,10 +343,13 @@ function parseType(toParse, types) {
   ];
 }
 
-// parseTypeList(String) ==> <TypeListComponent />
-// Takes a string that is the contents of some .md file up to an instance of <TypeList exclusive and the array of types and
-// parses the string up to the first instance of </TypeList> inclusive, returning an array where the first element is the rest 
-// of the string after </TypeList> and the second element is the TypeListComponent that is the result of the parse.
+/**
+ * parses a TypeList
+ * @param toParse<String> the string to be parsed up to an instance of '<TypeList' exclusive
+ * @param data<data> the data resulting from a schema introspection query
+ * @return<[String, <TypeListComponent />]> an array who's first element is the rest of the given string after '</TypeList>' exclusive
+ *        and who's second is the parsed Type
+ */
 function parseTypeList(toParse, types) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
@@ -362,11 +394,15 @@ function parseTypeList(toParse, types) {
   ];
 }
 
-// parseOperationTable(String) ==> <OperationTableComponent />
-// Takes a string that is the contents of some .md file up to an instance of <OperationTable exclusive and the data resulting from
-// an introspection query and parses the string up to the first instance of </OperationTable> inclusive, returning an array where 
-// the first element is the rest of the string after </OperationTable> and the second element is the OperationTableComponent that
-//  is the result of the parse.
+/**
+ * parses an OperationTable
+ * 
+ * @param toParse<String> the string to be parsed up to an instance of '<OperationTable' exclusive
+ * @param data<data> the data resulting from a schema introspection query
+ * 
+ * @return<[String, <OperationTableComponent />]> an array who's first element is the rest of the given string after 
+ *        '</OperationTable>' exclusive and who's second is the parsed Type
+ */
 function parseOperationTable(toParse, data) {
   let props = '';
   while (toParse.substring(0, 1) !== '>') {
@@ -406,9 +442,11 @@ function parseOperationTable(toParse, data) {
   ];
 }
 
-// parseSidebar(String) ==> <div>{[ReactComponent]}</div>
-// Takes a string that is the contents of some .md file and parses the string, producing a div which contains
-// the contents of the .md file's sidebar.
+/**
+ * parses the sidebar of a page 
+ * @param toParse<String> the string to be parsed (generaly the contents of some .md file)
+ * @return<div>{[ReactComponent]}</div> the parsed sidebar
+ */
 function parseSidebar(toParse) {
   toParse = removeComments(toParse);
   let output = [];
@@ -427,9 +465,11 @@ function parseSidebar(toParse) {
   return <div id='docSidebar'>{output}</div>;
 }
 
-// parseBodyInside(String, Boolean) ==> <div>{[ReactComponent]}</div>
-// Takes a string that is the contents of some .md file up to an instance of <Sidebar> exclusive and parses
-// the string to the first instance of </Sidebar> inclusicve, returning the result.
+/**
+ * parses the inside of a page's sidebar
+ * @param toParse<String> the string to be parsed up to an instance of <Sidebar> exclusive
+ * @return<div>{[ReactComponent]}</div> the parsed sidebar
+ */
 function parseSidebarInside(toParse) {
   let output = [];
   while (toParse.length > 0) {
@@ -458,10 +498,12 @@ function parseSidebarInside(toParse) {
   return output;
 }
 
-// parseLogo(String) ==> <OperationTableComponent />
-// Takes a string that is the contents of some .md file up to an instance of <Logo> exclusive and parses the string
-// up to the first instance of </Logo> inclusive, returning an array where the first element is the rest of the string
-// after </Logo> and the second element is the img that is the result of the parse.
+/**
+ * parses a logo
+ * @param toParse<String> the string to be parsed up to an instance of <Logo> exclusive
+ * @return<[String, <img />]> an array who's first element is rest of the string after </Logo> exclusive and the second
+ *        is the parsed logo
+ */
 function parseLogo(toParse) {
   let link = '';
   while (toParse.substring(0, 7) !== '</Logo>') {
@@ -478,10 +520,12 @@ function parseLogo(toParse) {
   ];
 }
 
-// parseHeader(String) ==> <ReactMarkdown />
-// Takes a string that is the contents of some .md file up to an instance of <Header> exclusive and parses the string
-// up to the first instance of </Header> inclusive, returning an array where the first element is the rest of the string
-// after </Header> and the second element is the ReactMarkdown Component that is the result of the parse.
+/**
+ * parses a header
+ * @param s<String> the string to be parsed up to an instance of <Subheader> exclusive
+ * @return<[String, <ReactMarkdown />]> an array who's first element is rest of the string after </Header> exclusive and the second
+ *        is the parsed Header
+ */
 function parseHeader(s) {
   let src = '';
   while (s.substring(0, 9) !== '</Header>') {
@@ -492,10 +536,12 @@ function parseHeader(s) {
   return [s, <ReactMarkdown id='header' source={src} />];
 }
 
-// parseSubheader(String) ==> <ReactMarkdown />
-// Takes a string that is the contents of some .md file up to an instance of <Subheader> exclusive and parses the string
-// up to the first instance of </Subheader> inclusive, returning an array where the first element is the rest of the string
-// after </Subheader> and the second element is the ReactMarkdown Component that is the result of the parse.
+/**
+ * parses a header
+ * @param s<String> the string to be parsed up to an instance of <Subheader> exclusive
+ * @return<[String, <ReactMarkdown />]> an array who's first element is rest of the string after </Subheader> exclusive and the second
+ *        is the parsed Header
+ */
 function parseSubheader(s) {
   let src = '';
   while (s.substring(0, 12) !== '</Subheader>') {
@@ -509,8 +555,11 @@ function parseSubheader(s) {
   ];
 }
 
-// removeComments(String) ==> String
-// Takes a string and returns that string with all comments (chars between /* */) removed
+/**
+ * removes all comments 
+ * @param s<String> the string from which comments will be removed
+ * @return<String> the string with comments removed
+ */
 function removeComments(s) {
   let output = '';
   while (s.length > 0) {
@@ -527,9 +576,11 @@ function removeComments(s) {
   return output;
 }
 
-// headingRenderer(props) ==> Header
-// takes a props object representing some header <h1>-<h6> and returns a header with an id that is
-// the same as the given header's name w/ special characters replaced w/ '-'
+/**
+ * gives a header the proper id
+ * @param props<Object> some header
+ * @return<ReactElement> that header with an id thats same as the given header's name w/ special characters replaced w/ '-'
+ */
 function headingRenderer(props) {
   var children = React.Children.toArray(props.children);
   var text = children.reduce(flatten, '');
@@ -537,6 +588,14 @@ function headingRenderer(props) {
   return React.createElement('h' + props.level, { id: slug }, props.children);
 }
 
+/**
+ * flattens react element into array
+ * 
+ * @param text<String>
+ * @param child<String>
+ * 
+ * @return<ReactElement> that header with an id thats same as the given header's name w/ special characters replaced w/ '-'
+ */ 
 function flatten(text, child) {
   return typeof child === 'string'
     ? text + child
