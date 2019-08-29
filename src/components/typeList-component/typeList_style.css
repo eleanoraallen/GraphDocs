@@ -1,24 +1,11 @@
 body,
 input,
-textarea {
-  font: 15px/20px Roboto, sans-serif;
-  color: #637282;
-}
 
-p {
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.2px;
-}
-
+/* Overide usual typeTable formatting to make types look better when printed in a list */
 #typeTable td:nth-child(1) {
   width: 400px;
 }
 
 #typeTable td:nth-child(2) {
   padding-left: 0px !important;
-}
-
-em {
-  font-style: normal;
 }

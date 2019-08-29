@@ -9,6 +9,7 @@ import { Token, ClientID, Endpoint } from '../../custom/authorization';
 import ReactMarkdown from 'react-markdown';
 import Sidebar from 'react-sidebar';
 import ExampleComponent from '../example-component/ExampleComponent';
+import StaticExampleComponent from '../staticExample-component/StaticExampleComponent'
 import TypeComponent from '../type-component/TypeComponent';
 import OperationTableComponent from '../operationTable-component/OperationTableComponent';
 import TypeListComponent from '../typeList-component/TypeListComponent';
@@ -53,7 +54,7 @@ const QueryString = 'query{__schema{ ' +
  * 
  * @return<div>{[ReactComponent]}</div> the parsed body of the page
  */
-function parseBody(toParse, shouldMergeColumns) {
+function parseBody(toParse, shouldMergeColumns, data) {
   toParse = removeComments(toParse);
   return(
       <div id='docBody' className='DocSearch-content'>
@@ -76,11 +77,31 @@ function parseBody(toParse, shouldMergeColumns) {
               }
             }
             return output;
+            return <p>{JSON.stringify(data)}</p>;
           }}}
         </Query>
       </div>
   );
 }
+
+// function parseBody(toParse, shouldMergeColumns, data) {
+//   data = JSON.parse(data);
+//   toParse = removeComments(toParse);
+//             let output = [];
+//             while (toParse.length > 0) {
+//               if (toParse.substring(0, 6) === '<Body>') {
+//                 let inside = '';
+//                 while (toParse.substring(0, 7) !== '</Body>') {
+//                   inside = inside + toParse[0];
+//                   toParse = toParse.slice(1);
+//                 }
+//                 output.push(parseBodyInside(inside.replace('<Body>', ''), shouldMergeColumns, data));
+//               } else {
+//                 toParse = toParse.slice(1);
+//               }
+//             }
+//             return output;
+// }
 
 /**
  * parses the inside of a page's body
@@ -226,6 +247,18 @@ function parseInside(toParse, data) {
       output.push(parsed[1]);
       toParse = parsed[0];
     }
+    if (toParse.substring(0, 14) === '<StaticExample') {
+      output.push(
+        <ReactMarkdown
+          source={section}
+          renderers={{ heading: props => headingRenderer(props) }}
+        />,
+      );
+      section = '';
+      const parsed = parseStaticExample(toParse.replace('<StaticExample', ''));
+      output.push(parsed[1]);
+      toParse = parsed[0];
+    }
     if (toParse.substring(0, 9) === '<TypeList') {
       output.push(
         <ReactMarkdown
@@ -299,13 +332,42 @@ function parseExample(toParse) {
   }
   toParse = toParse.replace('>', '');
   const autoformat = !props.includes('autoformat=false');
+  const isStatic = props.includes('static=true');
   let input = '';
   while (toParse.substring(0, 10) !== '</Example>') {
     input = input + toParse[0];
     toParse = toParse.slice(1);
   }
   toParse = toParse.replace('</Example>', '');
-  return [toParse, <ExampleComponent input={input} autoformat={autoformat} />];
+  if (isStatic) {
+    return [toParse, <StaticExampleComponent input={input} autoformat={autoformat} editable={false} />]
+  } else {
+    return [toParse, <ExampleComponent input={input} autoformat={autoformat} />];
+  }
+}
+
+/**
+ * parses a Static Example
+ * @param toParse<String> the string to be parsed up to an instance of '<StaticExample' exclusive
+ * @return<[String, <StaticExampleComponent />]> an array who's first element is the rest of the given string after '</StaticExample>' exclusive
+ *        and who's second is the parsed ExampleComponent
+ */
+function parseStaticExample(toParse) {
+  let props = '';
+  while (toParse.substring(0, 1) !== '>') {
+    props = props + toParse[0];
+    toParse = toParse.slice(1);
+  }
+  toParse = toParse.replace('>', '');
+  const autoformat = !props.includes('autoformat=false');
+  const editable = !props.includes('editable=true');
+  let input = '';
+  while (toParse.substring(0, 16) !== '</StaticExample>') {
+    input = input + toParse[0];
+    toParse = toParse.slice(1);
+  }
+  toParse = toParse.replace('</StaticExample>', '');
+  return [toParse, <StaticExampleComponent input={input} autoformat={autoformat} editable={editable} />]
 }
 
 /**
@@ -607,7 +669,7 @@ function flatten(text, child) {
 //  ----------------------------------------------------------------------------------------
 
 // Component Class
-export default function ParseComponent({ showSidebar, mergeColumns, input }) {
+export default function ParseComponent({ showSidebar, mergeColumns, input, backup }) {
   const memoizedOutput = useMemo(() =>
   <ApolloProvider client={client}>
     <Sidebar
@@ -618,7 +680,7 @@ export default function ParseComponent({ showSidebar, mergeColumns, input }) {
       shadow={false}
       touch={false}
       styles={{ sidebar: { width: '200px' } }}>
-      <b>{parseBody(input, mergeColumns)}</b>
+      <b>{parseBody(input, mergeColumns, backup)}</b>
     </Sidebar>
     </ApolloProvider>,
     [mergeColumns, showSidebar]

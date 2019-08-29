@@ -1,0 +1,96 @@
+/* Theme For Input Example Windows -------------------------------------------- */
+
+.cm-s-input-theme.CodeMirror {
+    background: #e8ebee;
+    color: #7e7e7e;
+    border: 1px solid #e8ebee;
+    border-radius: 4px;
+  }
+  .cm-s-input-theme div.CodeMirror-selected {
+    background: rgba(196, 217, 241, 0.74) !important;
+  }
+  .cm-s-input-theme .CodeMirror-gutters {
+    background: rgba(17, 116, 230, 0.6);
+    border-right: 1px;
+  }
+  .cm-s-input-theme .CodeMirror-linenumber {
+    color: #e7eaec;
+  }
+  
+  /* Cursor */
+  .cm-s-input-theme .CodeMirror-cursor {
+    border-left: 1px solid #7e7e7e;
+    border-right: 0.01em solid #7e7e7e;
+    opacity: 0.5;
+  }
+  .cm-s-input-theme .CodeMirror-activeline-background {
+    background: #363342;
+    opacity: 0.5;
+  }
+  
+  .cm-s-input-theme .cm-cursor .CodeMirror-cursor {
+    background: #7e7e7e;
+    opacity: 0.5;
+  }
+  
+  .cm-s-input-theme span.cm-atom,
+  .cm-s-input-theme span.cm-number,
+  .cm-s-input-theme span.cm-keyword,
+  .cm-s-input-theme span.cm-variable,
+  .cm-s-input-theme span.cm-attribute,
+  .cm-s-input-theme span.cm-quote,
+  .cm-s-input-theme span.cm-hr,
+  .cm-s-input-theme span.cm-link {
+    color: rgba(17, 115, 230);
+  }
+  
+  .cm-s-input-theme span.cm-property {
+    color: #47a04e;
+  }
+  .cm-s-input-theme span.cm-punctuation,
+  .cm-s-input-theme span.cm-unit,
+  .cm-s-input-theme span.cm-negative {
+    color: #7e7e7e;
+  }
+  .cm-s-input-theme span.cm-string {
+    color: #ff82e0;
+  }
+  .cm-s-input-theme span.cm-operator {
+    color: #d782ff;
+  }
+  .cm-s-input-theme span.cm-positive {
+    color: #6a51e6;
+  }
+  
+  .cm-s-input-theme span.cm-variable-2,
+  .cm-s-input-theme span.cm-variable-3,
+  .cm-s-input-theme span.cm-type,
+  .cm-s-input-theme span.cm-string-2,
+  .cm-s-input-theme span.cm-url {
+    color: #6a51e6;
+  }
+  .cm-s-input-theme span.cm-def,
+  .cm-s-input-theme span.cm-tag,
+  .cm-s-input-theme span.cm-builtin,
+  .cm-s-input-theme span.cm-qualifier,
+  .cm-s-input-theme span.cm-header,
+  .cm-s-input-theme span.cm-em {
+    color: #43c7f7;
+  }
+  .cm-s-input-theme span.cm-bracket,
+  .cm-s-input-theme span.cm-comment {
+    color: #7e7e7e;
+  }
+  
+  .cm-s-input-theme span.cm-error,
+  .cm-s-input-theme span.cm-invalidchar {
+    color: #e04242;
+  }
+  
+  .cm-s-input-theme span.cm-header {
+    font-weight: normal;
+  }
+  .cm-s-input-theme .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: #eeebff !important;
+  }

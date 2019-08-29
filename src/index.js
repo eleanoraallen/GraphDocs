@@ -9,6 +9,20 @@ import { mainPage, otherPages } from './custom/pages';
 //  ----------------------------------------------------------------------------------------
 
 /**
+ * gets backup
+ * TODO! DELETE OR EDIT ME LATER
+ */
+// async function getBackup() {
+//   try {
+//   const res = await fetch('schemaResult.txt');
+//   const txt = await res.text();
+//   return txt;
+//   } catch (e) {
+//     return e;
+//   }
+// }
+
+/**
  * Asyncronous function that gets the content for the main page from the mainPage markdown file
  * @return<String> The contents of the mainPage .md file
  */
@@ -89,6 +103,12 @@ function App() {
     setThreeMd(await getThreeMd());
   }, []);
 
+  // Get Backups: TODO! DELETE OR EDIT ME LATER
+  // const [backupTxt, setBackupText] = useState(null);
+  // useEffect(async () => {
+  //   setBackupText(await getBackup());
+  // }, []);
+
   // Get Page Text (used to determine which page to rener)
   const splited = window.location.href.split('page=');
   let pageText;
@@ -131,6 +151,7 @@ function App() {
         input={`<Sidebar> <Logo>/</Logo> </Sidebar> <Body><Full> <Type>${input}</Type> </Full></Body>`}
         showSidebar={renderOptions.shouldShowSidebar}
         mergeColumns={renderOptions.shouldMergeColumns}
+        // backup={backupTxt}
       />
     );
   }
@@ -145,6 +166,7 @@ function App() {
           input={Onemd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
+          // backup={backupTxt}
         />
       );
     }
@@ -159,6 +181,7 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
+          // backup={backupTxt}
         />
       );
     }
@@ -173,13 +196,17 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
+          // backup={backupTxt}
         />
       );
     }
   }
   // render Main documentation
   else {
-    if (Mainmd === null) {
+    if (Mainmd === null || 
+      // backupTxt === null
+      false
+      ) {
       return <div />;
     } else {
       return (
@@ -187,6 +214,7 @@ function App() {
           input={Mainmd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
+          // backup={backupTxt}
         />
       );
     }

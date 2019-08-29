@@ -56,7 +56,24 @@ hr {
   padding: 0;
 }
 
-/* Sidebar Div */
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e6e6e6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(206, 206, 206, 0.582);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(178, 178, 180, 0.582);
+}
+
+/* Page Sidebar */
 #docSidebar {
   padding-right: 10px;
   padding-left: 10px;
@@ -83,7 +100,7 @@ hr {
   padding-top: 20px;
 }
 
-/* Content Div */
+/* Page Body */
 #docBody a {
   text-decoration: none !important;
 }
@@ -92,7 +109,7 @@ hr {
   visibility: hidden;
 }
 
-/* Table used to render content */
+/* Table used to render content of the body */
 #appTable td {
   vertical-align: top;
   padding-left: 2%;
@@ -119,21 +136,4 @@ hr {
 #appTable td:nth-child(2) {
   background-color: #f6f8f9;
   width: 500px !important;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 15px;
-}
-
-::-webkit-scrollbar-track {
-  background: #e6e6e6;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(206, 206, 206, 0.582);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(178, 178, 180, 0.582);
 }

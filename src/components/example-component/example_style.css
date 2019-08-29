@@ -7,7 +7,7 @@ body {
   font-weight: normal !important;
 }
 
-/* Button Style  */
+/* The button used to Run examples */
 button {
   display: inline-block;
   border: none;
@@ -39,103 +39,6 @@ button:focus {
 button:active {
   background: #131d28;
   transition: background 80ms ease-in-out, transform 80ms ease;
-}
-
-/* Theme Style -------------------------------------------- */
-
-.cm-s-duotone-dark.CodeMirror {
-  background: #e8ebee;
-  color: #7e7e7e;
-  border: 1px solid #e8ebee;
-  border-radius: 4px;
-}
-.cm-s-duotone-dark div.CodeMirror-selected {
-  background: rgba(196, 217, 241, 0.74) !important;
-}
-.cm-s-duotone-dark .CodeMirror-gutters {
-  background: rgba(17, 116, 230, 0.6);
-  border-right: 1px;
-}
-.cm-s-duotone-dark .CodeMirror-linenumber {
-  color: #e7eaec;
-}
-
-/* Cursor */
-.cm-s-duotone-dark .CodeMirror-cursor {
-  border-left: 1px solid #7e7e7e;
-  border-right: 0.01em solid #7e7e7e;
-  opacity: 0.5;
-}
-.cm-s-duotone-dark .CodeMirror-activeline-background {
-  background: #363342;
-  opacity: 0.5;
-}
-
-.cm-s-duotone-dark .cm-cursor .CodeMirror-cursor {
-  background: #7e7e7e;
-  opacity: 0.5;
-}
-
-.cm-s-duotone-dark span.cm-atom,
-.cm-s-duotone-dark span.cm-number,
-.cm-s-duotone-dark span.cm-keyword,
-.cm-s-duotone-dark span.cm-variable,
-.cm-s-duotone-dark span.cm-attribute,
-.cm-s-duotone-dark span.cm-quote,
-.cm-s-duotone-dark span.cm-hr,
-.cm-s-duotone-dark span.cm-link {
-  color: rgba(17, 115, 230);
-}
-
-.cm-s-duotone-dark span.cm-property {
-  color: #47a04e;
-}
-.cm-s-duotone-dark span.cm-punctuation,
-.cm-s-duotone-dark span.cm-unit,
-.cm-s-duotone-dark span.cm-negative {
-  color: #7e7e7e;
-}
-.cm-s-duotone-dark span.cm-string {
-  color: #ff82e0;
-}
-.cm-s-duotone-dark span.cm-operator {
-  color: #d782ff;
-}
-.cm-s-duotone-dark span.cm-positive {
-  color: #6a51e6;
-}
-
-.cm-s-duotone-dark span.cm-variable-2,
-.cm-s-duotone-dark span.cm-variable-3,
-.cm-s-duotone-dark span.cm-type,
-.cm-s-duotone-dark span.cm-string-2,
-.cm-s-duotone-dark span.cm-url {
-  color: #6a51e6;
-}
-.cm-s-duotone-dark span.cm-def,
-.cm-s-duotone-dark span.cm-tag,
-.cm-s-duotone-dark span.cm-builtin,
-.cm-s-duotone-dark span.cm-qualifier,
-.cm-s-duotone-dark span.cm-header,
-.cm-s-duotone-dark span.cm-em {
-  color: #43c7f7;
-}
-.cm-s-duotone-dark span.cm-bracket,
-.cm-s-duotone-dark span.cm-comment {
-  color: #7e7e7e;
-}
-
-.cm-s-duotone-dark span.cm-error,
-.cm-s-duotone-dark span.cm-invalidchar {
-  color: #e04242;
-}
-
-.cm-s-duotone-dark span.cm-header {
-  font-weight: normal;
-}
-.cm-s-duotone-dark .CodeMirror-matchingbracket {
-  text-decoration: underline;
-  color: #eeebff !important;
 }
 
 /* General Codemirror Style -------------------------------------------- */

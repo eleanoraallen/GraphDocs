@@ -49,6 +49,7 @@ These tags can be used only to create/within the body of the documentation
 - `<Full></Full>` : specifies that whatever is in-between these two tags will render such that it will take up the full width of the body
 - `<Left></Left>` & `<Right></Right>` : These tags must be used together in this order! Specifies that, when possible, the contents will be rendered in parralel collumns, the stuff between the `<Left>` `</Left>` tags on the left, and the stuff between the `<Right></Right>` tags on the right.
 - `<Example></Example>` : creates an instance of the example component initialized with whatever text is between the tags.
+- `<StaticExample></StaticExample>` : creates an instance of the static example component initialized with whatever text is between the tags.
 - `<Type></Type>` : creates an instance of the type component initialized with whatever text is between the tags.
 - `<TypeList></TypeList>` : creates an instance of the type component initialized with whatever text is between the tags.
 - `<OperationTable></OperationTable>` : creates an instance of the type component initialized with whatever text is between the tags.
@@ -65,7 +66,7 @@ These tags can be used only to create/within the body of the documentation
 
 Example components:
 
-`<Example autoformat>input</Example>`
+`<Example autoformat static>input</Example>`
 
 are used to create windows that can be used to display code examples. These windows are live and fully interactive, you can type new stuff into them, run whatever you have, and get results back live from your API.
 
@@ -76,7 +77,7 @@ Example components start out with whatever text was between their tags as their 
 query { 
   aQuery 
   { 
-  result 
+    result 
   }
 }
 
@@ -106,6 +107,52 @@ query {
   result
   }
 }
+
+#### Making a regular example static
+You may wish to add a code example that can't be run. To do this, you would generaly use the `<StaticExample>` component, but it is also possible to do this by creating a regular example component and including the parameter static=true. For example: `<Example static=true>query{aQuery{result}}</Example>` will produce something like:
+
+query { 
+  aQuery 
+  { 
+    result 
+  }
+}
+
+But will not display a run button or be editable.
+
+---
+
+## Static Example Components
+
+---
+
+Static Example Components:
+
+`<StaticExample autoformat editable>input</StaticExample>`
+
+are used to display example code that is static, rather than dynamic. Static examples do not include a run button and can not be used to make queries or do anything else.
+
+Like Example Components, Static Example components start out with whatever text was between their tags as their content, so `<StaticExample></StaticExample>` creates an empty window, while `<StaticExample>query{aQuery{result}}</StaticExample>` creates an example window with the text:
+
+query { 
+  aQuery 
+  { 
+    result 
+  }
+}
+
+Static Examples also include the autoformat parameter, which is used in the same way as in regular Examples (see 'Auto-formatting' above). It is also possible to generate inputs in Static Examples in the same way as in regulare Examples (see 'Generating Input' above).
+
+Static Examples have a unique parameter: 'editable.' By default, static examples can't be edited. However, you may wish to make it possible to edit a static example. To do this, include the parameter editable=true in the component. For example <StaticExample editable=true> `<StaticExample editable=true>query{aQuery{result}}</StaticExample>` will produce an example window with the text:
+
+query { 
+  aQuery 
+  { 
+    result 
+  }
+}
+
+but the result will be editable.
 
 ---
 
@@ -279,7 +326,7 @@ by appending "/?page=_stuff here_" you can get it to display other pages in the 
 
 To change the style of the main page edit /src/app_style.css
 
-To change the style of dynamic examples edit /src/components/example-component/example_style.css
+To chage the style of individual components edit the css files found in /src/components/NAME_OF_COMPONENT_YOU_WANT_TO_EDIT
 
 ---
 

@@ -1,0 +1,96 @@
+/* Theme For Output Example Windows -------------------------------------------- */
+
+.cm-s-output-theme.CodeMirror {
+    background: #e8ebee;
+    color: #7e7e7e;
+    border: 1px solid #e8ebee;
+    border-radius: 4px;
+  }
+  .cm-s-output-theme div.CodeMirror-selected {
+    background: rgba(196, 217, 241, 0.74) !important;
+  }
+  .cm-s-output-theme .CodeMirror-gutters {
+    background: rgba(17, 116, 230, 0.6);
+    border-right: 1px;
+  }
+  .cm-s-output-theme .CodeMirror-linenumber {
+    color: #e7eaec;
+  }
+  
+  /* Cursor */
+  .cm-s-output-theme .CodeMirror-cursor {
+    border-left: 1px solid #7e7e7e;
+    border-right: 0.01em solid #7e7e7e;
+    opacity: 0.5;
+  }
+  .cm-s-output-theme .CodeMirror-activeline-background {
+    background: #363342;
+    opacity: 0.5;
+  }
+  
+  .cm-s-output-theme .cm-cursor .CodeMirror-cursor {
+    background: #7e7e7e;
+    opacity: 0.5;
+  }
+  
+  .cm-s-output-theme span.cm-atom,
+  .cm-s-output-theme span.cm-number,
+  .cm-s-output-theme span.cm-keyword,
+  .cm-s-output-theme span.cm-variable,
+  .cm-s-output-theme span.cm-attribute,
+  .cm-s-output-theme span.cm-quote,
+  .cm-s-output-theme span.cm-hr,
+  .cm-s-output-theme span.cm-link {
+    color: rgba(17, 115, 230);
+  }
+  
+  .cm-s-output-theme span.cm-property {
+    color: #47a04e;
+  }
+  .cm-s-output-theme span.cm-punctuation,
+  .cm-s-output-theme span.cm-unit,
+  .cm-s-output-theme span.cm-negative {
+    color: #7e7e7e;
+  }
+  .cm-s-output-theme span.cm-string {
+    color: #ff82e0;
+  }
+  .cm-s-output-theme span.cm-operator {
+    color: #d782ff;
+  }
+  .cm-s-output-theme span.cm-positive {
+    color: #6a51e6;
+  }
+  
+  .cm-s-output-theme span.cm-variable-2,
+  .cm-s-output-theme span.cm-variable-3,
+  .cm-s-output-theme span.cm-type,
+  .cm-s-output-theme span.cm-string-2,
+  .cm-s-output-theme span.cm-url {
+    color: #6a51e6;
+  }
+  .cm-s-output-theme span.cm-def,
+  .cm-s-output-theme span.cm-tag,
+  .cm-s-output-theme span.cm-builtin,
+  .cm-s-output-theme span.cm-qualifier,
+  .cm-s-output-theme span.cm-header,
+  .cm-s-output-theme span.cm-em {
+    color: #43c7f7;
+  }
+  .cm-s-output-theme span.cm-bracket,
+  .cm-s-output-theme span.cm-comment {
+    color: #7e7e7e;
+  }
+  
+  .cm-s-output-theme span.cm-error,
+  .cm-s-output-theme span.cm-invalidchar {
+    color: #e04242;
+  }
+  
+  .cm-s-output-theme span.cm-header {
+    font-weight: normal;
+  }
+  .cm-s-output-theme .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: #eeebff !important;
+  }

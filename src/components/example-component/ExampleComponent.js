@@ -5,12 +5,14 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloProvider, Query, Mutation, Subscription } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
+import {js_beautify} from 'js-beautify';
 import CodeMirror from 'react-codemirror';
 import 'codemirror-graphql/mode';
 import gql from 'graphql-tag';
 import './example_style.css';
+import './input-theme.css';
+import './output-theme.css';
 import { Token, ClientID, Endpoint } from '../../custom/authorization';
-import {js_beautify} from 'js-beautify';
 
 //  ----------------------------------------------------------------------------------------
 // # Constants
@@ -36,16 +38,16 @@ const client = new ApolloClient({
 });
 
 // CodeMirror options
-let options = {
+let inputOptions = {
   lineNumbers: true,
   mode: 'graphql',
-  theme: 'duotone-dark',
+  theme: 'input-theme',
   lineWrapping: true,
 };
 let outputOptions = {
   lineNumbers: true,
   mode: 'json',
-  theme: 'duotone-dark',
+  theme: 'output-theme',
   lineWrapping: true,
 };
 
@@ -463,7 +465,7 @@ renderSubscription() {
               value={this.state.code}
               mode='graphql'
               onChange={this.updateCode.bind(this)}
-              options={options}
+              options={inputOptions}
             />
           </p>
           <p>{this.renderMutation()}</p>
