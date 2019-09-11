@@ -65,23 +65,18 @@ function parseBody(toParse, shouldMergeColumns, data) {
             <div>
               <div style={{
               position: 'absolute', left: '50%', top: '45%',
-              transform: 'translate(-50%, -50%)'
-          }}
-          ><PropagateLoader
-          sizeUnit={"px"}
-          size={40}
-          color={'rgba(17, 116, 230, 0.6)'}
-          loading={true}
-        />
-          </div>
-          <div style={{
-              position: 'absolute', left: '51.5%', top: '52.5%',
-              transform: 'translate(-50%, -50%)',
-              fontWeight: 'normal',
-          }}><p>Preforming Schema Introspection Query...</p></div>
-          </div>
-          );
-          ;
+              transform: 'translate(-50%, -50%)'}}>
+                <PropagateLoader
+                  sizeUnit={"px"}
+                  size={40}
+                  color={'rgba(17, 116, 230, 0.6)'}
+                  loading={true}/>
+              </div>
+              <div style={{
+                position: 'absolute', left: '51.5%', top: '52.5%',
+                transform: 'translate(-50%, -50%)',  fontWeight: 'normal',}}>
+                <p>Preforming Schema Introspection Query...</p></div>
+            </div>);
           if (error) return <p>{JSON.stringify(error)}</p>;
           if (data) {
             let output = [];

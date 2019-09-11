@@ -54,7 +54,7 @@ function makeType(typeName, printHeader, printDiscriptions, types) {
             type.inputFields,
             types,
             type.name,
-            'type',
+            'input',
             printDiscriptions,
           );
       }

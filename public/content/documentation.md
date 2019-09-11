@@ -13,8 +13,8 @@
 <Subheader>[Queries](#queries)</Subheader>
 <Subheader>[Mutations](#mutations)</Subheader>
 <Subheader>[Subscriptions](#subscriptions)</Subheader>
-<Subheader>[Objects](#objects)</Subheader>
-<Subheader>[Input Objects](#input-objects)</Subheader>
+<Subheader>[Types](#types)</Subheader>
+<Subheader>[Inputs](#inputs)</Subheader>
 <Subheader>[Enumerators](#enumerators)</Subheader>
 <Header>[Additional Information](#additional-information)</Header>
 </Sidebar>
@@ -560,7 +560,7 @@ For an interactive reference, head to the [playground](https://playground.charge
 
 <Full>
 
-### Objects
+### Types
 
 <TypeList>Object</TypeList>
 
@@ -570,7 +570,7 @@ For an interactive reference, head to the [playground](https://playground.charge
 
 <Full>
 
-### Input Objects
+### Inputs
 
 <TypeList>Input_Object</TypeList>
 
