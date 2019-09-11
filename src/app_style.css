@@ -140,7 +140,7 @@ hr {
   align-items: center !important;
 }
 
-/* shrinks right div for chrome */
+/* shrinks right div for webkit browsers */
 @media screen and (-webkit-min-device-pixel-ratio:0)
   and (min-resolution:.001dpcm) {
     #appTable td:nth-child(2){width: 500px;}

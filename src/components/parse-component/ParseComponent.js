@@ -8,6 +8,7 @@ import gql from 'graphql-tag';
 import { Token, ClientID, Endpoint } from '../../custom/authorization';
 import ReactMarkdown from 'react-markdown';
 import Sidebar from 'react-sidebar';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 import ExampleComponent from '../example-component/ExampleComponent';
 import StaticExampleComponent from '../staticExample-component/StaticExampleComponent'
 import TypeComponent from '../type-component/TypeComponent';
@@ -60,7 +61,27 @@ function parseBody(toParse, shouldMergeColumns, data) {
       <div id='docBody' className='DocSearch-content'>
         <Query query={gql(QueryString)}>
         {({ loading, data, error }) => {
-          if (loading) return <p>{`   Loading Documentation...`}</p>;
+          if (loading) return(
+            <div>
+              <div style={{
+              position: 'absolute', left: '50%', top: '45%',
+              transform: 'translate(-50%, -50%)'
+          }}
+          ><PropagateLoader
+          sizeUnit={"px"}
+          size={40}
+          color={'rgba(17, 116, 230, 0.6)'}
+          loading={true}
+        />
+          </div>
+          <div style={{
+              position: 'absolute', left: '51.5%', top: '52.5%',
+              transform: 'translate(-50%, -50%)',
+              fontWeight: 'normal',
+          }}><p>Preforming Schema Introspection Query...</p></div>
+          </div>
+          );
+          ;
           if (error) return <p>{JSON.stringify(error)}</p>;
           if (data) {
             let output = [];
@@ -77,7 +98,7 @@ function parseBody(toParse, shouldMergeColumns, data) {
               }
             }
             return output;
-            return <p>{JSON.stringify(data)}</p>;
+            // return <p>{JSON.stringify(data)}</p>;
           }}}
         </Query>
       </div>
