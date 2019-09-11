@@ -120,7 +120,7 @@ hr {
 
 #appTable {
   width: 100%;
-  max-width: 1500px;
+  max-width: 1600px;
   background-color: #ffffff;
   padding-top: 0px;
   padding-bottom: 0px;
@@ -135,5 +135,18 @@ hr {
 
 #appTable td:nth-child(2) {
   background-color: #f6f8f9;
-  width: 500px !important;
+  width: 550px;
+  align-content: center !important;
+  align-items: center !important;
+}
+
+/* shrinks right div for chrome */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+  and (min-resolution:.001dpcm) {
+    #appTable td:nth-child(2){width: 500px;}
+}
+
+/* widens right div for firefox */
+@-moz-document url-prefix() {
+  #appTable td:nth-child(2){width: 550px !important;}
 }
