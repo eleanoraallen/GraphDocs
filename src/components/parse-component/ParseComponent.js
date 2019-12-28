@@ -52,11 +52,15 @@ const QueryString = 'query{__schema{ ' +
  * 
  * @param toParse<String> the string to be parsed (generaly the contents of some .md file)
  * @param shouldMergeColumns<Boolean> true iff columns should be merged
+ * @param autoline<Boolean> true iff we should be adding lines to documentation automaticaly
  * 
  * @return<div>{[ReactComponent]}</div> the parsed body of the page
  */
-function parseBody(toParse, shouldMergeColumns, data) {
+function parseBody(toParse, shouldMergeColumns, autoline) {
   toParse = removeComments(toParse);
+  if (!toParse.includes('<Body>')) {
+    toParse = generateBody(toParse, autoline);
+  }
   return(
       <div id='docBody' className='DocSearch-content'>
         <Query query={gql(QueryString)}>
@@ -93,31 +97,108 @@ function parseBody(toParse, shouldMergeColumns, data) {
               }
             }
             return output;
-            // return <p>{JSON.stringify(data)}</p>;
           }}}
         </Query>
       </div>
   );
 }
 
-// function parseBody(toParse, shouldMergeColumns, data) {
-//   data = JSON.parse(data);
-//   toParse = removeComments(toParse);
-//             let output = [];
-//             while (toParse.length > 0) {
-//               if (toParse.substring(0, 6) === '<Body>') {
-//                 let inside = '';
-//                 while (toParse.substring(0, 7) !== '</Body>') {
-//                   inside = inside + toParse[0];
-//                   toParse = toParse.slice(1);
-//                 }
-//                 output.push(parseBodyInside(inside.replace('<Body>', ''), shouldMergeColumns, data));
-//               } else {
-//                 toParse = toParse.slice(1);
-//               }
-//             }
-//             return output;
-// }
+/**
+ * creates a body if none exists
+ * @param input<String> the string from which the body is to be derived (the .md file)
+ * @param autoline<Boolean> true iff we should be adding lines to documentation automaticaly
+ * @return<String> a string that is parsable as a body
+ */
+function generateBody(input, autoline) {
+  let output = '<Body>\n ';
+  // if we don't start out with a header put everything into a full
+  if (input[0] !== "#" && input.length > 0) {
+    output = output + '<Full>';
+    while (input.length > 0 && input[0] !== "#") {
+      output = output + input[0];
+      input = input.slice(1);
+    }
+    output = output + ' </Full> \n ';
+  }
+  // // go through for headerss
+  while (input.length > 0) {
+    if (input[0] == '#') {
+      const results = generateSection(input, autoline);
+      output = output + results[1];
+      input = results[0];
+    } else {
+      output = output + input[0];
+      input = input.slice(1);
+    }
+  }
+  output = output + ' \n </Body>';
+  // remove first line if it was automaticaly put in
+  if (autoline) {
+    output = output.replace(' \n <Line> \n ','');
+  }
+  return output;
+}
+
+/**
+ * creates a documentation section (either a <Full></Full> or a <Left></Left><Right></Right>)
+ * @param input<String> the string from which the section is to be derived (from the .md file)
+ * @param autoline<Boolean> true iff we should be adding lines to documentation automaticaly
+ * @return[<String>,<String>] a list of strings where the first is the remaining input and the second is the section
+ */
+function generateSection(input, autoline) {
+  let section = "";
+  let output = "";
+  // add autoline
+  if (input.length > 0 && input.substring(0,2) !== '##' && autoline) {
+    output = output + ' \n <Line> \n ';
+  }
+  // get section
+  while (input.length > 0 && input[0] == "#") {
+    section = section + input[0];
+    input = input.slice(1);
+  }
+  let inSection = true;
+  while (input.length > 0 && inSection) {
+    if (input.substring(0,6) == "######") {
+      section = section + "######";
+      input = input.slice(6);
+    }
+    if (input.substring(0,5) == "#####") {
+      section = section + "#####";
+      input = input.slice(5);
+    }
+    if (input.substring(0,4) == "####") {
+      section = section + "####";
+      input = input.slice(4);
+    }
+    if (input.substring(0,3) == "###") {
+      section = section + "###";
+      input = input.slice(3);
+    }
+    if (input.substring(0,2) == "(#") {
+      section = section + "(#";
+      input = input.slice(2);
+    }
+    if (input[0] == "#") {
+      inSection = false;
+    } else {
+      section = section + input[0];
+      input = input.slice(1);
+    }
+  }
+  // see if left/right or full
+  if (section.includes("####") || section.includes("#####") || section.includes("######")) {
+    output = output + " <Left> \n ";
+    while (!(section.substring(0,4) == "####")) {
+      output = output + section[0];
+      section = section.slice(1);
+    }
+    output = output + " \n </Left> \n <Right> \n " + section + " \n </Right> \n ";
+  } else {
+    output = output + " <Full> \n " + section + " \n </Full> \n ";
+  }
+  return([input, output]);
+}
 
 /**
  * parses the inside of a page's body
@@ -179,7 +260,10 @@ function parseLeft(toParse, shouldMergeColumns, data) {
   let rightCol = inside.replace('<Right>', '');
   let rightContent;
   if (!rightCol.includes('<Example')) {
-  rightContent = [parseInside(rightCol, data), <div id='darkMirror'><ExampleComponent input='Trans Rights!' autoformat={true} /></div>];
+  rightContent = [parseInside(rightCol, data), 
+    <div id='darkMirror'>
+      <ExampleComponent input='Trans Rights!' autoformat={true} />
+    </div>];
   } else {
     rightContent = parseInside(rightCol, data);
   }
@@ -527,6 +611,9 @@ function parseOperationTable(toParse, data) {
  */
 function parseSidebar(toParse) {
   toParse = removeComments(toParse);
+  if (!toParse.includes("<Sidebar>")) {
+    toParse = generateSidebar(toParse);
+  }
   let output = [];
   while (toParse.length > 0) {
     if (toParse.substring(0, 9) === '<Sidebar>') {
@@ -541,6 +628,56 @@ function parseSidebar(toParse) {
     }
   }
   return <div id='docSidebar'>{output}</div>;
+}
+
+/**
+ * creates a sidebar if none exists
+ * @param input<String> the string from which the sidebar is to be derived (the page body)
+ * @return<String> a string that is parsable as a sidebar
+ */
+function generateSidebar(input) {
+  let output = '<Sidebar> \n  <Logo></Logo> \n  ';
+  while (input.length > 0) {
+    if (input[0] === '#') {
+      if (input.substring(0, 2) === '# ') {
+          const parsed = getHeaderText(input);
+          output = output + `<Header>${parsed[1]}</Header> \n  `;
+          input = parsed[0];
+        // } else if (input.substring(0, 4) === '### ') {
+        //   const parsed = getHeaderText(input);
+        //   output = output + `<Subheader>${parsed[1]}</Subheader> \n  `;
+        //   input = parsed[0];
+        } else {
+          while (input.length > 0 && input[0] !== ' ') {
+            input = input.slice(1);
+          }
+        }
+    } else {
+      input = input.slice(1);
+    }
+  }
+  output = output + '</Sidebar>';
+  return output;
+}
+
+/**
+ * takes a stirng and returns that string minus the text of the first header and the text of the first header seperatly
+ * @param s<String> a string representing the page body in markdown
+ * @return<[String, String]> an array where the first element is what remains of the input string after parsing and
+ * the second is the text of the header
+ */
+function getHeaderText(s) {
+  while (s[0] !== ' ') {
+    s = s.slice(1);
+  }
+  s = s.slice(1);
+  let headerText = '';
+  while (s.length > 0 && s[0] !== '\n' && s[0] !== '\r') {
+    headerText = headerText + s[0];
+    s = s.slice(1);
+  }
+  headerText = `[${headerText}](#${headerText.toLowerCase().replace(/\W/g, '-')})`
+  return [s, headerText];
 }
 
 /**
@@ -645,7 +782,7 @@ function removeComments(s) {
       while (s.substring(0, 2) !== '*/') {
         s = s.slice(1);
       }
-      s.replace('*/', '');
+      s = s.slice(2);
     } else {
       output = output + s[0];
       s = s.slice(1);
@@ -668,10 +805,8 @@ function headingRenderer(props) {
 
 /**
  * flattens react element into array
- * 
  * @param text<String>
  * @param child<String>
- * 
  * @return<ReactElement> that header with an id thats same as the given header's name w/ special characters replaced w/ '-'
  */ 
 function flatten(text, child) {
@@ -685,7 +820,7 @@ function flatten(text, child) {
 //  ----------------------------------------------------------------------------------------
 
 // Component Class
-export default function ParseComponent({ showSidebar, mergeColumns, input, backup }) {
+export default function ParseComponent({ showSidebar, mergeColumns, input, autoline}) {
   const memoizedOutput = useMemo(() =>
   <ApolloProvider client={client}>
     <Sidebar
@@ -694,9 +829,11 @@ export default function ParseComponent({ showSidebar, mergeColumns, input, backu
       docked={showSidebar}
       transitions={false}
       shadow={false}
-      touch={false}
+      touch={true}
+      touchHandleWidth={20}
+      dragToggleDistance={30}
       styles={{ sidebar: { width: '200px' } }}>
-      <b>{parseBody(input, mergeColumns, backup)}</b>
+      <b>{parseBody(input, mergeColumns, autoline)}</b>
     </Sidebar>
     </ApolloProvider>,
     [mergeColumns, showSidebar]

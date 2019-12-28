@@ -5,22 +5,15 @@ import ParseComponent from './components/parse-component/ParseComponent';
 import { mainPage, otherPages } from './custom/pages';
 
 //  ----------------------------------------------------------------------------------------
-// # Functions
+// # Constants
 //  ----------------------------------------------------------------------------------------
 
-/**
- * gets backup
- * TODO! DELETE OR EDIT ME LATER
- */
-// async function getBackup() {
-//   try {
-//   const res = await fetch('schemaResult.txt');
-//   const txt = await res.text();
-//   return txt;
-//   } catch (e) {
-//     return e;
-//   }
-// }
+// true if lines should automaticaly be added to seperate sections
+const autoline = true;
+
+//  ----------------------------------------------------------------------------------------
+// # Functions
+//  ----------------------------------------------------------------------------------------
 
 /**
  * Asyncronous function that gets the content for the main page from the mainPage markdown file
@@ -121,7 +114,7 @@ function App() {
   const [renderOptions, setRenderOptions] = React.useState({
     shouldShowSidebar: window.innerWidth > 730,
     shouldMergeColumns: window.innerWidth < 1200,
-    toReturn: <div>;</div>,
+    autoline: autoline,
   });
 
   // Detirmine if page needs to rerender
@@ -151,7 +144,7 @@ function App() {
         input={`<Sidebar> <Logo>/</Logo> </Sidebar> <Body><Full> <Type>${input}</Type> </Full></Body>`}
         showSidebar={renderOptions.shouldShowSidebar}
         mergeColumns={renderOptions.shouldMergeColumns}
-        // backup={backupTxt}
+        autoline={renderOptions.autoline}
       />
     );
   }
@@ -166,7 +159,7 @@ function App() {
           input={Onemd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          // backup={backupTxt}
+          autoline={renderOptions.autoline}
         />
       );
     }
@@ -181,7 +174,7 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          // backup={backupTxt}
+          autoline={renderOptions.autoline}
         />
       );
     }
@@ -196,17 +189,14 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          // backup={backupTxt}
+          autoline={renderOptions.autoline}
         />
       );
     }
   }
   // render Main documentation
   else {
-    if (Mainmd === null || 
-      // backupTxt === null
-      false
-      ) {
+    if (Mainmd === null || false) {
       return <div />;
     } else {
       return (
@@ -214,7 +204,7 @@ function App() {
           input={Mainmd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          // backup={backupTxt}
+          autoline={renderOptions.autoline}
         />
       );
     }

@@ -164,7 +164,7 @@ Type components:
 
 `<Type printHeader printDiscriptions>typeName</Type>`
 
-are used to print a type (one of Object, Enum, Input_Object, Scalar, Interface, or Union) from your schema. Printed types are generated dynamically, and will include links to any other types in its fields. To do this, simply put the name of the type (w/ correct capitalization) between the tags. For instance `<Type>MyType</Type>` would produce something like:
+are used to print a type (one of Type, Enum, Input, Scalar, Interface, or Union) from your schema. Printed types are generated dynamically, and will include links to any other types in its fields. To do this, simply put the name of the type (w/ correct capitalization) between the tags. For instance `<Type>MyType</Type>` would produce something like:
 
 MyType: Description of My Type
 
@@ -192,7 +192,7 @@ TypeList components
 
 `<TypeList printHeaders printDescriptions include exclude showLines>typeKind</TypeList>`
 
-are used to print a list of types (Objects, Enums, Input_Objects, Scalars, Interfaces, or Unions). Types are sorted alphabetically and each type is generated dynamically, and will include links to any other types in its fields. To do this, simply put the name of the kind of type you want (one of: "Object" "Enum" "Input_Object" "Scalar" "Interface" "Union" or "all" if you want to print everything) to print between the tags. For instance `<TypeList>Object</TypeList>` would produce something like:
+are used to print a list of types (Types, Enums, Inputs, Scalars, Interfaces, or Unions). Types are sorted alphabetically and each type is generated dynamically, and will include links to any other types in its fields. To do this, simply put the name of the kind of type you want (one of: "Object" "Enum" "Input_Object" "Scalar" "Interface" "Union" or "all" if you want to print everything) to print between the tags. For instance `<TypeList>Object</TypeList>` would produce something like:
 
 Object1: Description of Object1
 

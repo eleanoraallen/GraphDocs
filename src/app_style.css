@@ -3,6 +3,7 @@ body {
   overflow: hidden !important;
 }
 
+/* General Text */
 p {
   font: 15px/20px Roboto, sans-serif;
   color: #637282;
@@ -10,14 +11,14 @@ p {
 
 /* Headers */
 h1 {
-  color: #252a32;
+  color: #637282;
   font-size: 32px;
   line-height: 40px;
 }
 
 h2 {
   color: #637282;
-  font-size: 32px;
+  font-size: 24px;
   line-height: 40px;
 }
 
@@ -129,10 +130,12 @@ hr {
   vertical-align: top;
 }
 
+/* Color and settings for the left column */
 #appTable td:nth-child(1) {
   background-color: #ffffff;
 }
 
+/* Color and settings for the right column */
 #appTable td:nth-child(2) {
   background-color: #f6f8f9;
   width: 550px;

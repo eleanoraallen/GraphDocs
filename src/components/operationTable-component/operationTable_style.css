@@ -2,6 +2,7 @@ body,
 input,
 textarea {
   font: 15px/20px Roboto, sans-serif;
+  font-weight: normal;
   color: #637282;
 }
 

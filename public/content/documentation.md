@@ -1,5 +1,6 @@
 /* ## SIDEBAR ## --------------------------------------------------------------------------------------------------------------------*/
 
+/*
 <Sidebar>
 <Logo>https://chargetrip.com/</Logo>
 <Line>
@@ -17,7 +18,7 @@
 <Subheader>[Inputs](#inputs)</Subheader>
 <Subheader>[Enumerators](#enumerators)</Subheader>
 <Header>[Additional Information](#additional-information)</Header>
-</Sidebar>
+*/
 
 /* ## BODY ## -----------------------------------------------------------------------------------------------------------------------*/
 
