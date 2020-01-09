@@ -1,34 +1,6 @@
-/* ## SIDEBAR ## --------------------------------------------------------------------------------------------------------------------*/
+/* Introduction -------------------------------------------------------------------------------------------------- */
 
-/*
-<Sidebar>
-<Logo>https://chargetrip.com/</Logo>
-<Line>
-<Header>[Introduction](#introduction)</Header>
-<Header>[Routing](#routing)</Header>
-<Header>[Stations](#stations)</Header>
-<Header>[Cars](#cars)</Header>
-<Header>[Users](#users)</Header>
-<Header>[Operators](#operators)</Header>
-<Header>[API Reference](#api-reference)</Header>
-<Subheader>[Queries](#queries)</Subheader>
-<Subheader>[Mutations](#mutations)</Subheader>
-<Subheader>[Subscriptions](#subscriptions)</Subheader>
-<Subheader>[Types](#types)</Subheader>
-<Subheader>[Inputs](#inputs)</Subheader>
-<Subheader>[Enumerators](#enumerators)</Subheader>
-<Header>[Additional Information](#additional-information)</Header>
-*/
-
-/* ## BODY ## -----------------------------------------------------------------------------------------------------------------------*/
-
-<Body>
-
-/* INTRODUCTION ------------------------------------------------------------------------------------------------------------------- */
-
-<Full>
-
-## Introduction
+# Introduction
 
 The Chargetrip API enables you to develop navigation tools for electric vehicles. You can use this API to produce routes between various locations conforming to a wide variety of parameters. You can also use it to retrieve and modify information about individual users on your platform, electric vehicles, stations and their operators, and much more.
 
@@ -40,15 +12,9 @@ This documentation is organized into seven sections. The first section [Getting 
 
 The Chargetrip API is built around [GraphQL](https://graphql.org/). If you aren't familiar with GraphQL, going over the [specs](https://graphql.github.io/graphql-spec/) would be helpful, though you probably won't need to have read them in their entirety to understand the basics of the API. For those unfamiliar with GraphQL or our API, this [Getting Started Guide](/?page=getting-started) coveres the basics of both, and might also be a good place to start.
 
-</Full>
+/* Routing ------------------------------------------------------------------------------------------------------ */
 
-<Line>
-
-/* Routing ------------------------------------------------------------------------------------------------------------------------ */
-
-<Left>
-
-## Routing
+# Routing
 
 The primary feature of the Chargetrip API is routing. A Route:
 
@@ -56,15 +22,11 @@ The primary feature of the Chargetrip API is routing. A Route:
 
 is used to access a route.
 
-</Left> <Right> </Right> <Left>
-
-### Retrieving or Modifying Route Data
+## Retrieving or Modifying Route Data
 
 There are several operators that are used to create and access routes. The `newRoute` mutation is used to create a route. It takes a `RequestInput` input object which contains all the parameters needed to create a route and returns the ID of a newly created Route. The `route` query is used to access a given Route by its ID. A Route will include both a primary route and a list of alternate routes (when available) which are stored as `RouteAlternative` objects. The `routeUpdatedByID` subscription is triggered whenever a specific Route is updated by the system.
 
 <OperationTable include=[route routealternative]>Operation</OperationTable>
-
-</Left> <Right>
 
 #### Example 1: Make a New Route
 
@@ -188,15 +150,10 @@ via
 }
 }</Example>
 
-</Right>
-
-<Line>
-
 /* Stations ----------------------------------------------------------------------------------------------------------------------- */
 
-<Left>
 
-## Stations
+# Stations
 
 A Station:
 
@@ -204,15 +161,11 @@ A Station:
 
 is used to represent and access information on individual charging stations. Each instance of the Station type contains all the information for a particular station.
 
-</Left> <Right> </Right> <Left>
-
-### Retrieving Station Data
+## Retrieving Station Data
 
 There are a number of queries that can be used to access different information about stations. `station` and `reviewList` take a station ID and produce information about that particular station while `stationList` and `stationAround` produce a list of stations according to given parameters.
 
 <OperationTable include=[station review reviewadd reviewedit]>Query</OperationTable>
-
-</Left> <Right>
 
 #### Example: Get Information About the Station(s) Nearest a Specific Point
 
@@ -308,9 +261,7 @@ updatedAt
 }
 }</Example>
 
-</Right> <Left>
-
-### Modifying a Station's Reviews
+## Modifying a Station's Reviews
 
 While clients are not permitted to modify station data, it is possible for users to add reviews to a station. A Review:
 
@@ -319,8 +270,6 @@ While clients are not permitted to modify station data, it is possible for users
 is used to represent a single review for a specific station. `addReview` adds a review from the logged in user to a given station while `updateReview` and `removeReview` modify a review added by the logged in user.
 
 <OperationTable include=[station review reviewadd reviewedit]>Mutation</OperationTable>
-
-</Left> <Right>
 
 #### Example: Add a Review to a Station
 
@@ -340,23 +289,16 @@ mutation addR {
 }
 </Example>
 
-</Right> <Left>
-
-### Station Related Subscriptions
+## Station Related Subscriptions
 
 There are several subscriptions relating to the Station type:
 
 <OperationTable include=[station review reviewadd reviewedit]>Subscription</OperationTable>
 
-</Left> <Right> </Right>
-
-<Line>
 
 /* Cars --------------------------------------------------------------------------------------------------------------------------- */
 
-<Left>
-
-## Cars
+# Cars
 
 A Car:
 
@@ -364,15 +306,11 @@ A Car:
 
 is used to represent and access information on individual types of cars within the system. Each instance of the Car type contains all information about that particular type of car. Cars can not be modified by clients. However, which cars' information a client has access to will depend on the client. Note: Cars should not be confused with UserCars, which references Car and represents a specific user's car.
 
-</Left> <Right> </Right> <Left>
-
-### Retrieving Car Data
+## Retrieving Car Data
 
 Several operations can be used to retrieve data on cars if you have access to them. `car` produces the data for a specific car given its ID, while `carList` produces data on a list of cars up to the full list of cars.
 
 <OperationTable include=[car caradd caredit] exclude=[usercar usercaradd usercaredit]>Operation</OperationTable>
-
-</Left> <Right>
 
 #### Example: Get Information on a List of Cars
 
@@ -389,15 +327,9 @@ query carListQ {
   }
 }</Example>
 
-</Right>
-
-<Line>
-
 /* Users -------------------------------------------------------------------------------------------------------------------------- */
 
-<Left>
-
-## Users
+# Users
 
 A User:
 
@@ -405,15 +337,11 @@ A User:
 
 is used to represent and access information on individual users of the platform. Each instance of the User type contains all the information for a particular user.
 
-</Left> <Right> </Right> <Left>
-
-### Retrieving User Data
+## Retrieving User Data
 
 Several queries can be used to access information about a user. `user` and `userReviewList` both produce information about the user that is currently logged in, while the rest produce information about a user after entering their ID.
 
 <OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Query</OperationTable>
-
-</Left> <Right>
 
 #### Example: Return The Logged In User's Information
 
@@ -430,15 +358,11 @@ roles
 }
 }</Example>
 
-</Right> <Left>
-
-### Modifying User Data
+## Modifying User Data
 
 There are several mutations that can be used to add, delete, or modify a user's information, all of which can alter only the logged in user's information.
 
 <OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Mutation</OperationTable>
-
-</Left> <Right>
 
 #### Example: Add a Location for the Logged in User
 
@@ -456,37 +380,30 @@ id
 }
 }</Example>
 
-</Right> <Left>
 
-### User Related Subscriptions
+## User Related Subscriptions
 
 There are many subscriptions related to the User type. Subscriptions are long-lived requests that fetch data in response to source events, and are mainly used by the system.
 
 <OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Subscription</OperationTable>
 
-</Left> <Right> </Right>
-
-<Line>
 
 /* Operators ---------------------------------------------------------------------------------------------------------------------- */
 
-<Left>
-## Operators
+# Operators
 An Operator:
 
 <Type printDescriptions=false printHeader=false>User</Type>
 
 is used to represent and access information on the operator of a station.
 
-</Left> <Right> </Right> <Left>
-
-### Retrieving Operator Data
+## Retrieving Operator Data
 
 There are several queries that can be used to access information on operators. `operator` retrieves information on an operator using its ID while `operatorList` retrieves information on a list of operators up to the full list of operators. There are also a number of subscriptions relating to operators:
 
 <OperationTable include=[operator operatoredit operatoradd]>Operation</OperationTable>
 
-</Left><Right>
+</Left
 
 #### Example: Get All Information on a Single Operator
 
@@ -509,96 +426,44 @@ updatedAt
 }
 }</Example>
 
-</Right>
-
-<Line>
-
 /* API Reference ------------------------------------------------------------------------------------------------------------------ */
 
-<Full>
-
-## API Reference
+# API Reference
 
 The following is a list of all operations, enumerators, and objects available in the API.
 
 For an interactive reference, head to the [playground](https://playground.chargetrip.io/graphQL) and click on the "schema" tab.
 
-</Full>
-
-<Line>
-
 /* Reference Subheadings ---------------------------------------------------------------------------------------------------------- */
 
-<Full>
-
-### Queries
+## Queries
 
 <OperationTable>Query</OperationTable>
 
-</Full>
-
-<Line>
-
-<Full>
-
-### Mutations
+## Mutations
 
 <OperationTable>Mutation</OperationTable>
 
-</Full>
-
-<Line>
-
-<Full>
-
-### Subscriptions
+## Subscriptions
 
 <OperationTable>Subscription</OperationTable>
 
-</Full>
-
-<Line>
-
-<Full>
-
-### Types
+## Types
 
 <TypeList>Object</TypeList>
 
-</Full>
-
-<Line>
-
-<Full>
-
-### Inputs
+## Inputs
 
 <TypeList>Input_Object</TypeList>
 
-</Full>
-
-<Line>
-
-<Full>
-
-### Enumerators
+## Enumerators
 
 <TypeList printDescriptions=false>Enum</TypeList>
 
-</Full>
+/* Additional Information --------------------------------------------------------------------------------------------------------- */
 
-<Line>
-
-* Additional Information --------------------------------------------------------------------------------------------------------- */
-
-<Full>
-
-## Additional Information
+# Additional Information
 
 For more information about the API, go to the [playground](https://playground.chargetrip.io/graphQL), and click on Schema to view information on all operations and objects.
 
 For more information about Chargetrip go to [chargetrip.com](https://chargetrip.com/).
-
-</Full>
-
-</Body>

@@ -1,6 +1,6 @@
-# Chargetrip API Documentation
+# GraphDocs GraphQL Documentation
 
-The Documentation is now live!: http://chargetrip-api-documentation.s3-website.eu-central-1.amazonaws.com/
+Chargetrip's Documentation! (a bit out of date but still, look!): http://chargetrip-api-documentation.s3-website.eu-central-1.amazonaws.com/
 
 ---
 
@@ -28,9 +28,11 @@ To Build:
 
 ---
 
-Documentation is generated from markdown files in /public. The contents of these files are first parsed for style and custom components, for which custom tags are used, then the stuff inside those tags is parsed as markdown as needed. ALL CONTENT THAT YOU WANT TO BE RENDERED MUST BE PUT INSIDE A CUSTOM TAG!
+Documentation is generated from markdown files in /public. To write documenation, simply write it as you would a simple markdown file. You can use headers to break up your documentation. '#' Will create the largest posible header, '##' and '###' will create smaller headers, and anything smaller will create the smallest type of header and push themselves and anything underneeth them into the right column. A sidebar will be automaticaly generated, using the largest headers ('#') as as the main links in the sidebar and the next two smallest headers ('##' and '###') as subheaders.
 
-### Sidebar Tags
+If you want to format the documentation yourself, you can use the following formatting tags to customize your documentation a bit. Please note that using any of these tags will override any automatic formating of your documentation.
+
+#### Sidebar Tags
 
 These tags can be used only to create/within the a sidebar
 
@@ -41,7 +43,7 @@ These tags can be used only to create/within the a sidebar
 
 note: most of the time, headers and subheaders will contain links (eg. [something](#heading-name) ), that will point to the id a heading (given by `##` or `<h1>` etc.) in the rest of the documentation. All headers are automaticaly asigned ids that are the same as their names but with all lower case letters and special characters (space,!,. etc.) replaced with -. (Eg '##My Introduction' would have an id 'my-introduction' and could be linked to with a header `<Header>`[Intro](#my-introduction).)
 
-### Body Tags
+#### Body Tags
 
 These tags can be used only to create/within the body of the documentation
 
@@ -54,9 +56,11 @@ These tags can be used only to create/within the body of the documentation
 - `<TypeList></TypeList>` : creates an instance of the type component initialized with whatever text is between the tags.
 - `<OperationTable></OperationTable>` : creates an instance of the type component initialized with whatever text is between the tags.
 
-### Misc Tags
+#### Misc Tags
 
 - `<Line>` : makes a horizontal line separating two parts of the documentation body or the sidebar (note: only works outside of other body tags if you want to add a line within a body tag, just use the markdown ---)
+
+note: lines are automaticaly included between sections if the documentation is being autoformated (you aren't using Body tags). To disable this, simply include "autoline={false}" anywhere in your documentation.
 
 ---
 

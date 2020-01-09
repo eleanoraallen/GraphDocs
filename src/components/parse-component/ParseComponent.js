@@ -52,14 +52,13 @@ const QueryString = 'query{__schema{ ' +
  * 
  * @param toParse<String> the string to be parsed (generaly the contents of some .md file)
  * @param shouldMergeColumns<Boolean> true iff columns should be merged
- * @param autoline<Boolean> true iff we should be adding lines to documentation automaticaly
  * 
  * @return<div>{[ReactComponent]}</div> the parsed body of the page
  */
-function parseBody(toParse, shouldMergeColumns, autoline) {
+function parseBody(toParse, shouldMergeColumns) {
   toParse = removeComments(toParse);
   if (!toParse.includes('<Body>')) {
-    toParse = generateBody(toParse, autoline);
+    toParse = generateBody(toParse);
   }
   return(
       <div id='docBody' className='DocSearch-content'>
@@ -106,10 +105,14 @@ function parseBody(toParse, shouldMergeColumns, autoline) {
 /**
  * creates a body if none exists
  * @param input<String> the string from which the body is to be derived (the .md file)
- * @param autoline<Boolean> true iff we should be adding lines to documentation automaticaly
  * @return<String> a string that is parsable as a body
  */
-function generateBody(input, autoline) {
+function generateBody(input) {
+  let autoline = true;
+  if (input.includes('autoline={false}')) {
+    input = input.replace('autoline={false}','');
+    autoline = false;
+  }
   let output = '<Body>\n ';
   // if we don't start out with a header put everything into a full
   if (input[0] !== "#" && input.length > 0) {
@@ -820,7 +823,7 @@ function flatten(text, child) {
 //  ----------------------------------------------------------------------------------------
 
 // Component Class
-export default function ParseComponent({ showSidebar, mergeColumns, input, autoline}) {
+export default function ParseComponent({ showSidebar, mergeColumns, input}) {
   const memoizedOutput = useMemo(() =>
   <ApolloProvider client={client}>
     <Sidebar
@@ -833,10 +836,11 @@ export default function ParseComponent({ showSidebar, mergeColumns, input, autol
       touchHandleWidth={20}
       dragToggleDistance={30}
       styles={{ sidebar: { width: '200px' } }}>
-      <b>{parseBody(input, mergeColumns, autoline)}</b>
+      <b>{parseBody(input, mergeColumns)}</b>
     </Sidebar>
     </ApolloProvider>,
     [mergeColumns, showSidebar]
   );
+
   return(memoizedOutput);
 }

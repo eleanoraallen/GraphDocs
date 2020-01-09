@@ -5,13 +5,6 @@ import ParseComponent from './components/parse-component/ParseComponent';
 import { mainPage, otherPages } from './custom/pages';
 
 //  ----------------------------------------------------------------------------------------
-// # Constants
-//  ----------------------------------------------------------------------------------------
-
-// true if lines should automaticaly be added to seperate sections
-const autoline = true;
-
-//  ----------------------------------------------------------------------------------------
 // # Functions
 //  ----------------------------------------------------------------------------------------
 
@@ -114,7 +107,6 @@ function App() {
   const [renderOptions, setRenderOptions] = React.useState({
     shouldShowSidebar: window.innerWidth > 730,
     shouldMergeColumns: window.innerWidth < 1200,
-    autoline: autoline,
   });
 
   // Detirmine if page needs to rerender
@@ -144,7 +136,6 @@ function App() {
         input={`<Sidebar> <Logo>/</Logo> </Sidebar> <Body><Full> <Type>${input}</Type> </Full></Body>`}
         showSidebar={renderOptions.shouldShowSidebar}
         mergeColumns={renderOptions.shouldMergeColumns}
-        autoline={renderOptions.autoline}
       />
     );
   }
@@ -159,7 +150,6 @@ function App() {
           input={Onemd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          autoline={renderOptions.autoline}
         />
       );
     }
@@ -174,7 +164,6 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          autoline={renderOptions.autoline}
         />
       );
     }
@@ -189,7 +178,6 @@ function App() {
           input={Twomd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          autoline={renderOptions.autoline}
         />
       );
     }
@@ -204,7 +192,6 @@ function App() {
           input={Mainmd}
           showSidebar={renderOptions.shouldShowSidebar}
           mergeColumns={renderOptions.shouldMergeColumns}
-          autoline={renderOptions.autoline}
         />
       );
     }
