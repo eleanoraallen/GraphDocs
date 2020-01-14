@@ -30,6 +30,8 @@ To Build:
 
 Documentation is generated from markdown files in /public. To write documenation, simply write it as you would a simple markdown file. You can use headers to break up your documentation. '#' Will create the largest posible header, '##' and '###' will create smaller headers, and anything smaller will create the smallest type of header and push themselves and anything underneeth them into the right column. A sidebar will be automaticaly generated, using the largest headers ('#') as as the main links in the sidebar and the next two smallest headers ('##' and '###') as subheaders.
 
+### Formatting Tags
+
 If you want to format the documentation yourself, you can use the following formatting tags to customize your documentation a bit. Please note that using any of these tags will override any automatic formating of your documentation.
 
 #### Sidebar Tags

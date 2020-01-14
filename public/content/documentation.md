@@ -1,5 +1,3 @@
-/* Introduction -------------------------------------------------------------------------------------------------- */
-
 # Introduction
 
 The Chargetrip API enables you to develop navigation tools for electric vehicles. You can use this API to produce routes between various locations conforming to a wide variety of parameters. You can also use it to retrieve and modify information about individual users on your platform, electric vehicles, stations and their operators, and much more.
@@ -11,8 +9,6 @@ This documentation is organized into seven sections. The first section [Getting 
 ### Getting Started
 
 The Chargetrip API is built around [GraphQL](https://graphql.org/). If you aren't familiar with GraphQL, going over the [specs](https://graphql.github.io/graphql-spec/) would be helpful, though you probably won't need to have read them in their entirety to understand the basics of the API. For those unfamiliar with GraphQL or our API, this [Getting Started Guide](/?page=getting-started) coveres the basics of both, and might also be a good place to start.
-
-/* Routing ------------------------------------------------------------------------------------------------------ */
 
 # Routing
 
@@ -149,8 +145,6 @@ via
 }
 }
 }</Example>
-
-/* Stations ----------------------------------------------------------------------------------------------------------------------- */
 
 
 # Stations
@@ -296,8 +290,6 @@ There are several subscriptions relating to the Station type:
 <OperationTable include=[station review reviewadd reviewedit]>Subscription</OperationTable>
 
 
-/* Cars --------------------------------------------------------------------------------------------------------------------------- */
-
 # Cars
 
 A Car:
@@ -327,7 +319,6 @@ query carListQ {
   }
 }</Example>
 
-/* Users -------------------------------------------------------------------------------------------------------------------------- */
 
 # Users
 
@@ -388,7 +379,6 @@ There are many subscriptions related to the User type. Subscriptions are long-li
 <OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Subscription</OperationTable>
 
 
-/* Operators ---------------------------------------------------------------------------------------------------------------------- */
 
 # Operators
 An Operator:
@@ -426,7 +416,6 @@ updatedAt
 }
 }</Example>
 
-/* API Reference ------------------------------------------------------------------------------------------------------------------ */
 
 # API Reference
 
@@ -434,7 +423,6 @@ The following is a list of all operations, enumerators, and objects available in
 
 For an interactive reference, head to the [playground](https://playground.chargetrip.io/graphQL) and click on the "schema" tab.
 
-/* Reference Subheadings ---------------------------------------------------------------------------------------------------------- */
 
 ## Queries
 
@@ -460,7 +448,6 @@ For an interactive reference, head to the [playground](https://playground.charge
 
 <TypeList printDescriptions=false>Enum</TypeList>
 
-/* Additional Information --------------------------------------------------------------------------------------------------------- */
 
 # Additional Information
 
