@@ -731,9 +731,9 @@ function parseLogo(toParse) {
   toParse = toParse.replace('</Logo>', '');
   return [
     toParse,
-    <a href={link} target='_blank'>
+    <a href={link}>
       {' '}
-      <img src={process.env.PUBLIC_URL + '/logo.png'} width='172' />{' '}
+      <img src={process.env.PUBLIC_URL + '/logo.png'} width='200' />{' '}
     </a>,
   ];
 }
@@ -835,7 +835,7 @@ export default function ParseComponent({ showSidebar, mergeColumns, input}) {
       touch={true}
       touchHandleWidth={20}
       dragToggleDistance={30}
-      styles={{ sidebar: { width: '200px' } }}>
+      styles={{ sidebar: { width: '240px' } }}>
       <b>{parseBody(input, mergeColumns)}</b>
     </Sidebar>
     </ApolloProvider>,

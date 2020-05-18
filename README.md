@@ -1,9 +1,5 @@
 # GraphDocs GraphQL Documentation
 
-Chargetrip's Documentation! (a bit out of date but still, look!): http://chargetrip-api-documentation.s3-website.eu-central-1.amazonaws.com/
-
----
-
 ## Basics
 
 ---
@@ -342,6 +338,6 @@ To chage the style of individual components edit the css files found in /src/com
 
 To change logo: replace replace /public/logo.png
 
-To change favicon: replace /public/favicon.png
+To change favicon: replace /public/favicon.ico
 
 To change title of the webpage: edit /public/index.html

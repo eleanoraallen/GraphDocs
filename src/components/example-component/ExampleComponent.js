@@ -5,7 +5,7 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloProvider, Query, Mutation, Subscription } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
-import {js_beautify} from 'js-beautify';
+import { js_beautify } from 'js-beautify';
 import CodeMirror from 'react-codemirror';
 import 'codemirror-graphql/mode';
 import gql from 'graphql-tag';
@@ -293,10 +293,10 @@ export default class ExampleComponent extends Component {
     };
   }
 
- /**
- * updates the code field
- * @param newCode<String> the new code
- */
+  /**
+  * updates the code field
+  * @param newCode<String> the new code
+  */
   updateCode(newCode) {
     this.setState({
       code: newCode,
@@ -304,10 +304,10 @@ export default class ExampleComponent extends Component {
     });
   }
 
- /**
- * renders a query
- * @return<Query> the query component to be rendered
- */
+  /**
+  * renders a query
+  * @return<Query> the query component to be rendered
+  */
   renderQuery() {
     try {
       return (
@@ -323,10 +323,10 @@ export default class ExampleComponent extends Component {
     }
   }
 
-/**
- * renders a mutation
- * @return<Mutation> the mutation component to be rendered
- */
+  /**
+   * renders a mutation
+   * @return<Mutation> the mutation component to be rendered
+   */
   renderMutation() {
     if (inputIsOperation(this.state.code, 'mutation')) {
       try {
@@ -383,31 +383,31 @@ export default class ExampleComponent extends Component {
     }
   }
 
-/**
- * renders a subscription
- * @return<Mutation> the subscription component to be rendered
- */
-renderSubscription() {
-  try {
-    return (
-      <Subscription subscription={gql(this.state.inputText)}>
-        {({ loading, data, error }) => {
-          this.setOutputText(loading, data, error);
-          return printOutputWindow(loading, data, error);
-        }}
-      </Subscription>
-    );
-  } catch {
-    return printOutput('');
+  /**
+   * renders a subscription
+   * @return<Mutation> the subscription component to be rendered
+   */
+  renderSubscription() {
+    try {
+      return (
+        <Subscription subscription={gql(this.state.inputText)}>
+          {({ loading, data, error }) => {
+            this.setOutputText(loading, data, error);
+            return printOutputWindow(loading, data, error);
+          }}
+        </Subscription>
+      );
+    } catch {
+      return printOutput('');
+    }
   }
-}
 
- /**
- * sets this.outputText
- * @param loading<loading> the loading data from an operation
- * @param data<data> the data from an operation
- * @param error<error> the error data from an operation
- */
+  /**
+  * sets this.outputText
+  * @param loading<loading> the loading data from an operation
+  * @param data<data> the data from an operation
+  * @param error<error> the error data from an operation
+  */
   setOutputText(loading, data, error) {
     if (loading) {
       this.state.outputText = 'loading...';

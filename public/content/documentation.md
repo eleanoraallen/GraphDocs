@@ -1,456 +1,128 @@
 # Introduction
 
-The Chargetrip API enables you to develop navigation tools for electric vehicles. You can use this API to produce routes between various locations conforming to a wide variety of parameters. You can also use it to retrieve and modify information about individual users on your platform, electric vehicles, stations and their operators, and much more.
+The DCMP (Digital Cognitive Mapping Project) API is designed to give researchers and developers easy access to all the data collected as a part of the [College Hill Digital Cognitive Mapping Project](http://dcmp-fronend.s3-website-us-east-1.amazonaws.com/), or any other projects created using the same system. The DCMP API gives everyone access not only to all of the information collected by this project, but to a powerful set of tools for filtering and analyzing this data, as well as the ability to easily integrate this information into any future projects.
 
-### About this Documentation
+To use the DCMP API, all you need is this endpoint link: [https://dcmp-server.herokuapp.com/](https://dcmp-server.herokuapp.com/).
 
-This documentation is organized into seven sections. The first section [Getting Started](#getting-started) gives a simple overview of the API and its features with examples. The next five sections [Routing](#routing), [Stations](#stations), [Cars](#cars), [Users](#users), and [Operators](#operators) contain more detailed information about the primary features of the API and how to use them sorted by category. The final section [API Reference](#api-reference) contains a complete reference for every operation, enumerator, and object available to clients through the API.
+# Getting Started
 
-### Getting Started
+The DCMP API is built around [GraphQL](https://graphql.org/). If you aren't familiar with GraphQL, it might be helpful to go over [the specs](https://graphql.org/learn/). However, this API is relatively simple and uses only a few GraphQL's features, so you absolutely do not need to be an expert to have access to this data.
 
-The Chargetrip API is built around [GraphQL](https://graphql.org/). If you aren't familiar with GraphQL, going over the [specs](https://graphql.github.io/graphql-spec/) would be helpful, though you probably won't need to have read them in their entirety to understand the basics of the API. For those unfamiliar with GraphQL or our API, this [Getting Started Guide](/?page=getting-started) coveres the basics of both, and might also be a good place to start.
+### About GraphQL
 
-# Routing
+GraphQL is a query language and a runtime system. Clients form requests (called queries) by using the GraphQL query language, and the GraphQL server executes these requests and returns the data in a response. Unlike REST APIs, which expose a different endpoint for each resource object, a GraphQL API makes all data available at a single endpoint. A client specifies exactly the data that it wants, and the server responds with only that data. GraphQL is seen as a modern alternative to a REST-based architecture and aimed at solving its shortcomings.
 
-The primary feature of the Chargetrip API is routing. A Route:
+The documentation for a GraphQL API lives side-by-side with the code that constitutes it. Combined with the typed Schema, this means that we can generate accurate and up-to-date documentation whenever something changes. Using GraphQL's introspection feature, you can query the Schema itself to explore its contents and documentation.
 
-<Type printHeader=false printDescriptions=false>Route</Type>
+### GraphQL Basics
 
-is used to access a route.
+Everything that's available through a GraphQL API is typed and included in its Schema. You can use this Schema to build queries that return only the data that you need. This solves the problem of over-fetching data. It also means that we know which fields each app is using, making it easier for us to evolve our APIs over time. 
 
-## Retrieving or Modifying Route Data
+All GraphQL requests are sent to the same endpoint, which means that you can often retrieve all the data that you need in a single request. Using GraphQL features such as connections, variables, and aliases, you can make your queries incredibly efficient and retrieve data about many resource types in a single request. Learn about query features [here](https://graphql.org/learn/queries/).
 
-There are several operators that are used to create and access routes. The `newRoute` mutation is used to create a route. It takes a `RequestInput` input object which contains all the parameters needed to create a route and returns the ID of a newly created Route. The `route` query is used to access a given Route by its ID. A Route will include both a primary route and a list of alternate routes (when available) which are stored as `RouteAlternative` objects. The `routeUpdatedByID` subscription is triggered whenever a specific Route is updated by the system.
+# Maps
 
-<OperationTable include=[route routealternative]>Operation</OperationTable>
+There are two main types of data that are available through DCMP API: Maps and Points. A `Map` represents the information for a single user created map, while a `Point` represents the information for a single point on a user created map. A `Map`:
 
-#### Example 1: Make a New Route
+<Type printHeader=false printDescriptions=false>Map</Type>
 
-<Example>mutation newRoute {
-newRoute(input: {
-ev:{
-id: "5ca4a846d858562d772944b0"
-battery:{
-capacity:28
-stateOfCharge:{
-value: 25
-type:kwh
-}
-finalStateOfCharge:{
-value:0
-type:kwh
-}
-}
-plugs:[{
-type: ccs
-chargingPower: 40
-},
-{
-type: type2
-chargingPower: 22
-}]
-minPower:40
-climate:false
-numberOfPassengers:1
-}
-routeRequest: {
-origin: {
-type: Feature
-geometry:{
-type: Point
-coordinates: [10.7389701,59.9133301]
-}
-properties: {
-addess:"0026 Oslo, Norway"
-}
-}
-destination:{
-type:Feature
-geometry: {
-type:Point
-coordinates:[7.966368380115114,58.14040107717675]
-}
-properties:{
-addess: "E 39, 4613 Kristiansand, Norway"
-}
-}
-}
-}
-)
+stores several important pieces of information. All Maps are guaranteed to have a unique ID field and a createdAt field which stores the time and date at which the Map was created as a String in [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) format.
+
+There are two queries that can be used to retrieve Maps. `map` is used to retrieve information about a single map while `mapList` is used to retrive multiple Maps at once.
+
+<OperationTable include=[map]>Query</OperationTable>
+
+## Retrieving Maps
+
+In order to retrieve a single Map, all you need is the Map's ID, a unique alphanumeric string that is generated by the backend whenever a new map is submitted.
+
+#### Retrieve a Single Map
+
+<Example>query { map(id: "5ec2c75ab215030017d1d16e") {
+  id
+  createdAt
+  creatorName
+  description
+	}
 }</Example>
 
-#### Example 2: Subscribe to a Route's Updates.
+## Retrieving Lists of Maps
 
-<Example>subscription getUpdates {
-routeUpdatedById(id: "INSERT_ROUTE_ID_HERE") {
-status
-}
-}</Example>
+The `mapList` query is used to retrieve lists of Maps. It takes three optional arguments `size` which specifies the maximum length of the list returned (by default 10), `page` which specifies the index of the page you want to retrieve (default 0, which for this operation means the most recent) and `query` a filter which can be applied to return a number of different results. A `MapListQuery`:
 
-#### Example 3: Query a Newly Created Route.
+<Type printHeader=false>MapListQuery</Type>
 
-<Example>query getRoute {
-route(id:"INSERT ROUTE ID HERE") {
-status
-route {
-id
-type
-charges
-distance
-duration
-consumption
-amenityRanking
-legs {
-distance
-duration
-consumption
-origin {
-type
-geometry {
-type
-coordinates
-}
-properties
-}
-destination {
-type
-geometry {
-type
-coordinates
-}
-properties
-}
-type
-name
-stationId
-operatorId
-chargeTime
-evse {
-externalId
-connectors {
-type
-power
-status
-}
-}
-}
-saving {
-co2
-money
-currency
-averageGasPrice
-averageEnergyPrice
-}
-via
-}
-}
-}</Example>
+has a number of fields that can be used to select different Maps. The operation field can be used to specify an operation to perform on the database: AND (default) if you want all returned values to comply with all the other fields, OR if you want all returned values to comply with at least one of the other fields, and NOR if you want all returned values to comply with none of the other fields.
 
-
-# Stations
-
-A Station:
-
-<Type printHeader=false printDescriptions=false>Station</Type>
-
-is used to represent and access information on individual charging stations. Each instance of the Station type contains all the information for a particular station.
-
-## Retrieving Station Data
-
-There are a number of queries that can be used to access different information about stations. `station` and `reviewList` take a station ID and produce information about that particular station while `stationList` and `stationAround` produce a list of stations according to given parameters.
-
-<OperationTable include=[station review reviewadd reviewedit]>Query</OperationTable>
-
-#### Example: Get Information About the Station(s) Nearest a Specific Point
-
-<Example>query nearbyStations {
-stationAround(
-query: {
-location: {
-type:Point
-coordinates:[9.07368, 58.82081]
-}
-distance:5000
-power: [50, 22]
-amenities: ["supermarket"]
-}
-size: 1
-page: 0
-) {
-id
-externalId
-name
-location {
-type
-coordinates
-}
-elevation
-evses {
-externalId
-evseId
-physicalReference
-connectors {
-externalId
-ocpiId
-power
-amps
-voltage
-type
-status
-properties
-}
-parkingRestriction
-properties
-paymentMethod
-price {
-value
-currency
-model
-displayValue
-}
-}
-chargers {
-type
-power
-price
-speed
-status {
-free
-busy
-error
-unknown
-}
-total
-}
-operator {
-id
-name
-}
-owner {
-id
-name
-}
-address {
-continent
-county
-city
-street
-number
-postalCode
-what3Words
-formattedAddress
-}
-amenities
-properties
-realtime
-private
-open24h
-timezone
-lastUsedDate
-power
-speed
-status
-createdAt
-updatedAt
-}
-}</Example>
-
-## Modifying a Station's Reviews
-
-While clients are not permitted to modify station data, it is possible for users to add reviews to a station. A Review:
-
-<Type printHeader=false printDescriptions=false>Station</Type>
-
-is used to represent a single review for a specific station. `addReview` adds a review from the logged in user to a given station while `updateReview` and `removeReview` modify a review added by the logged in user.
-
-<OperationTable include=[station review reviewadd reviewedit]>Mutation</OperationTable>
-
-#### Example: Add a Review to a Station
-
-<Example autoformat=true>
-mutation addR {
-  addReview(
-    review: {
-        stationId:"~INSERT_STATION_ID_HERE~"
-        rating: 5
-        message: generateString(20)
-        locale: generateString(20)
-      ev: generateString(10)
-    }
-  ) {
-    id
-  }
-}
-</Example>
-
-## Station Related Subscriptions
-
-There are several subscriptions relating to the Station type:
-
-<OperationTable include=[station review reviewadd reviewedit]>Subscription</OperationTable>
-
-
-# Cars
-
-A Car:
-
-<Type printDescriptions=false printHeader=false>Car</Type>
-
-is used to represent and access information on individual types of cars within the system. Each instance of the Car type contains all information about that particular type of car. Cars can not be modified by clients. However, which cars' information a client has access to will depend on the client. Note: Cars should not be confused with UserCars, which references Car and represents a specific user's car.
-
-## Retrieving Car Data
-
-Several operations can be used to retrieve data on cars if you have access to them. `car` produces the data for a specific car given its ID, while `carList` produces data on a list of cars up to the full list of cars.
-
-<OperationTable include=[car caradd caredit] exclude=[usercar usercaradd usercaredit]>Operation</OperationTable>
-
-#### Example: Get Information on a List of Cars
-
-<Example>
-query carListQ {
-  carList(
-    size: 3
-    page: 0
-  )
-  {
-    id
-    make
-    carModel
-  }
-}</Example>
-
-
-# Users
-
-A User:
-
-<Type printDescriptions=false printHeader=false>User</Type>
-
-is used to represent and access information on individual users of the platform. Each instance of the User type contains all the information for a particular user.
-
-## Retrieving User Data
-
-Several queries can be used to access information about a user. `user` and `userReviewList` both produce information about the user that is currently logged in, while the rest produce information about a user after entering their ID.
-
-<OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Query</OperationTable>
-
-#### Example: Return The Logged In User's Information
-
-<Example>query userQ {
-user {
-id
-externalId
-email
-firstName
-lastName
-properties
-phone
-roles
-}
-}</Example>
-
-## Modifying User Data
-
-There are several mutations that can be used to add, delete, or modify a user's information, all of which can alter only the logged in user's information.
-
-<OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Mutation</OperationTable>
-
-#### Example: Add a Location for the Logged in User
-
-<Example>mutation addLocation {
-addUserLocation(
-location: {
-name: generateString(15)
-address: generateString(15)
-location: {
-type:Point
-coordinates: [generateFloat(2 6 true), generateFloat(2 6 true)]
-}
-}) {
-id
-}
-}</Example>
-
-
-## User Related Subscriptions
-
-There are many subscriptions related to the User type. Subscriptions are long-lived requests that fetch data in response to source events, and are mainly used by the system.
-
-<OperationTable include=[user usercar userlocation userinput usercarinput userlocationinput]>Subscription</OperationTable>
+#### Retrieve a List of Maps
+<Example>query {mapList(size: 3) {id}}</Example>
 
 
 
-# Operators
-An Operator:
+# Points
 
-<Type printDescriptions=false printHeader=false>User</Type>
+Points are the other main datatype used in the DCMP API. A `Point`:
 
-is used to represent and access information on the operator of a station.
+<Type printHeader=false printDescriptions=false>Map</Type>
 
-## Retrieving Operator Data
+stores a number of important pieces of information. All Point's are guaranteed to have four fields: a unique ID field, a name field which stores user given the name of the Point, a `mapId` field which stores the ID of the Map with which the given Point is associated, and a `Cordinates` object:
 
-There are several queries that can be used to access information on operators. `operator` retrieves information on an operator using its ID while `operatorList` retrieves information on a list of operators up to the full list of operators. There are also a number of subscriptions relating to operators:
+<Type printHeader=false printDescriptions=false>Coordinates</Type>
 
-<OperationTable include=[operator operatoredit operatoradd]>Operation</OperationTable>
+which stores the Point's x y coordinates. 
 
-</Left
+There are two queries that can be used to retrieve Points. `point` is used to retrieve information about a single Point while `pointList` is used to retrive multiple Points at once.
 
-#### Example: Get All Information on a Single Operator
+<OperationTable exclude=[map]>Query</OperationTable>
 
-<Example>query getOperator {
-operator(id:"5c58134a9f94fa3b975b916f") {
-id
-externalId
-name
-country
-contact {
-phone
-email
-website
-facebook
-twitter
-properties
-}
-createdAt
-updatedAt
-}
-}</Example>
+## Retrieving a Single Point
+
+In order to retrieve a single Point, all you need is that Point's ID, a unique alphanumeric string that is generated by the backend whenever a new map is submitted.
+
+#### Retrieving a Single Point
+<Example>query {point(id: "5ec2c75ab215030017d1d17e") {id mapId name coordinates {x y} creatorName category otherText description}</Example>
+
+## Retrieving a List of Points
+The `pointList` query is used to retrieve lists of Points. Like `mapList`, `pointList` takes three optional arguments `size` which specifies the maximum length of the list returned (by default 10), `page` which specifies the index of the page you want to retrieve (default 0, which for this operation means the first points added) and `query` a filter which can be applied to return a number of different results. A `PointListQuery`:
+
+<Type printHeader=false>PointListQuery</Type>
+
+has a number of fields that can be used to select different Points. The operation field can be used to specify an operation to perform on the database: AND (default) if you want all returned values to comply with all the other fields, OR if you want all returned values to comply with at least one of the other fields, and NOR if you want all returned values to comply with none of the other fields.
+
+#### Retrieving a List of Points
+
+<Example>query {pointList(size: 3 query: {mapId: "5ec2c75ab215030017d1d16e" coordinates: [230, 428] within: 75}) {id name coordinates {x y}}}</Example>
+
 
 
 # API Reference
-
-The following is a list of all operations, enumerators, and objects available in the API.
-
-For an interactive reference, head to the [playground](https://playground.chargetrip.io/graphQL) and click on the "schema" tab.
-
 
 ## Queries
 
 <OperationTable>Query</OperationTable>
 
-## Mutations
-
-<OperationTable>Mutation</OperationTable>
-
-## Subscriptions
-
-<OperationTable>Subscription</OperationTable>
-
 ## Types
 
-<TypeList>Object</TypeList>
+<TypeList showLines=false>Object</TypeList>
 
 ## Inputs
 
-<TypeList>Input_Object</TypeList>
+<TypeList showLines=false>Input_Object</TypeList>
 
 ## Enumerators
 
-<TypeList printDescriptions=false>Enum</TypeList>
+<TypeList printDescriptions=false showLines=false exclude=[CacheControlScope]>Enum</TypeList>
 
 
-# Additional Information
 
-For more information about the API, go to the [playground](https://playground.chargetrip.io/graphQL), and click on Schema to view information on all operations and objects.
+# Resources
 
-For more information about Chargetrip go to [chargetrip.com](https://chargetrip.com/).
+GraphQL Playground [here](https://dcmp-server.herokuapp.com/).
+
+Backend repo [here](https://github.com/nathanmichaelallen/dcmp-server).
+
+Frontend repo [here](https://github.com/nathanmichaelallen/dcmp-frontend).
+
+Documentation repo [here](https://github.com/nathanmichaelallen/GraphDocs).
+
+Thanks for taking the time to look at my project! I really appreciate it :)

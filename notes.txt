@@ -1,3 +1,0 @@
-Notes:
-- 'addess' in Featuregeometry properties
-- maybe each user should be limited to posting one review per station?
